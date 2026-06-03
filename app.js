@@ -94,6 +94,16 @@ const App = (() => {
 // Run immediately so theme applies before any render
 App.init();
 
+/* ── Store ready handler ── */
+window.addEventListener('store-ready', (e) => {
+  const { mode } = e.detail;
+  const dotEl    = document.getElementById('store-dot');
+  const labelEl  = document.getElementById('store-label');
+  if (dotEl)   dotEl.className   = 'store-dot ' + (mode === 'sqlite-wasm' ? 'dot-sqlite' : 'dot-ls');
+  if (labelEl) labelEl.textContent = mode === 'sqlite-wasm' ? 'sqlite' : 'localstorage';
+  console.log('[SionOS] Store mode:', mode);
+});
+
 document.addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
     e.preventDefault();
@@ -112,15 +122,24 @@ document.addEventListener('keydown', e => {
   }
 });
 
-console.log('%c SION OS v2.0.0 ', 'background:#00ff88;color:#080808;font-weight:bold;font-family:monospace;padding:2px 8px;');
+console.log('%c SION OS v2.2.0 ', 'background:#00ff88;color:#080808;font-weight:bold;font-family:monospace;padding:2px 8px;');
 const _isElectron = typeof window !== 'undefined' && window.electronAPI?.isElectron;
 console.log('%c ' + (_isElectron ? 'Electron desktop app' : 'Web browser') + ' ', 'color:#666;font-family:monospace;');
 
 /* ── Electron-aware notifications ── */
-function osNotify(title, body) {
+function osNotify(title, body, urgent = false) {
   if (window.electronAPI?.notify) {
-    window.electronAPI.notify(title, body);
+    window.electronAPI.notify(title, body, urgent);
+    // Also refresh tray menu so live stats update
+    window.electronAPI.refreshTray?.();
   } else if ('Notification' in window && Notification.permission === 'granted') {
     new Notification(title, { body });
+  }
+}
+
+/* ── Refresh tray after any data change ── */
+function refreshTray() {
+  if (window.electronAPI?.refreshTray) {
+    window.electronAPI.refreshTray();
   }
 }

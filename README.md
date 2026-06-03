@@ -63,3 +63,42 @@ npm start
 | 9 | SQLite local database migration | ⏳ |
 | 10 | System tray polish + notifications | ⏳ |
 | 11 | Package as .app bundle | ⏳ |
+
+---
+
+## Phase 2 complete — v2.2.0
+
+### Build as Mac .app
+
+```bash
+cd ~/Sion-os
+bash build.sh
+```
+
+This:
+1. Converts the iconset to `.icns`
+2. Packages everything into `dist/mac-arm64/Sion OS.app`
+3. Opens the dist folder in Finder
+
+### Install to Applications
+
+```bash
+bash install.sh
+```
+
+Then launch from Spotlight: `Cmd+Space` → `Sion OS`
+
+### Phase 2 sprints complete
+
+| Sprint | Feature | Status |
+|--------|---------|--------|
+| 8  | Electron desktop app | ✅ |
+| 9  | SQLite WASM database | ✅ |
+| 10 | Tray + notifications | ✅ |
+| 11 | .app bundle + install | ✅ |
+
+### Phase 3 next
+- Claude API integration
+- WhatsApp via Twilio
+- Calendar sync
+- Morning briefing via WhatsApp

@@ -1,29 +1,27 @@
 /* ============================================
    SION OS — electron/preload.js
-   v2.0.0 — Phase 2 / Sprint 8
-   Secure bridge: exposes only what renderer needs
+   v2.2.0 — Sprint 10
    ============================================ */
 
 const { contextBridge, ipcRenderer } = require('electron');
-const path = require('path');
-const os   = require('os');
 
 contextBridge.exposeInMainWorld('electronAPI', {
 
-  // Platform detection
-  platform: process.platform,
+  platform:   process.platform,
   isElectron: true,
-
-  // Data directory
-  getDataDir: () => ipcRenderer.invoke('get-data-dir'),
+  version:    '2.2.0',
 
   // Open links in default browser
   openExternal: (url) => ipcRenderer.send('open-external', url),
 
   // Native notifications
-  notify: (title, body) => ipcRenderer.send('notify', { title, body }),
+  notify: (title, body, urgent = false) =>
+    ipcRenderer.send('notify', { title, body, urgent }),
 
-  // App version
-  version: '2.0.0',
+  // Data directory path
+  getDataDir: () => ipcRenderer.invoke('get-data-dir'),
+
+  // Trigger tray menu refresh with live data
+  refreshTray: () => ipcRenderer.send('refresh-tray'),
 
 });

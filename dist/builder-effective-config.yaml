@@ -1,0 +1,30 @@
+directories:
+  output: dist
+  buildResources: electron/assets
+appId: ag.antigua.sionos
+productName: Sion OS
+copyright: © 2026 Sion Looby-Martinez
+asar: true
+mac:
+  category: public.app-category.productivity
+  icon: electron/assets/icon.iconset/icon_512x512@2x.png
+  darkModeSupport: true
+  hardenedRuntime: false
+  gatekeeperAssess: false
+  identity: null
+  target:
+    - target: dir
+      arch:
+        - arm64
+files:
+  - filter:
+      - electron/**/*
+      - index.html
+      - style.css
+      - app.js
+      - data/**/*
+      - modules/**/*
+      - '!electron/assets/icon.iconset'
+extraResources: []
+npmRebuild: false
+electronVersion: 31.7.7

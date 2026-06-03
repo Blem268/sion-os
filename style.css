@@ -1366,3 +1366,28 @@ html, body {
 .electron .titlebar {
   height: 40px;
 }
+
+/* ============================================
+   SPRINT 9 — Store status indicator
+   ============================================ */
+
+.store-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  color: var(--fg3);
+  margin-bottom: 6px;
+  cursor: default;
+}
+
+.store-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--fg3);
+  flex-shrink: 0;
+}
+
+.store-dot.dot-sqlite { background: var(--green); }
+.store-dot.dot-ls     { background: var(--amber); }
