@@ -27,7 +27,7 @@
         &nbsp;·&nbsp;
         <span id="today-date"></span>
         &nbsp;&nbsp;
-        <button class="theme-toggle" id="theme-toggle" onclick="App.toggleTheme()" title="Toggle light/dark mode" aria-label="Toggle theme">
+        <button class="theme-toggle" id="theme-toggle" onclick="if(typeof App!=='undefined')App.toggleTheme()" title="Toggle light/dark mode" aria-label="Toggle theme">
           <i class="ti ti-sun" id="theme-icon" aria-hidden="true"></i>
         </button>
       </span>

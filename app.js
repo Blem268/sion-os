@@ -44,8 +44,8 @@ function navigate(moduleId, btn) {
 const App = (() => {
 
   function applyTheme(theme) {
-    const root    = document.documentElement;
-    const icon    = document.getElementById('theme-icon');
+    const root = document.documentElement;
+    const icon = document.getElementById('theme-icon');
     if (theme === 'light') {
       root.classList.add('light');
       if (icon) { icon.classList.remove('ti-sun'); icon.classList.add('ti-moon'); }
@@ -56,14 +56,17 @@ const App = (() => {
   }
 
   function toggleTheme() {
-    const current = Store.get('theme') || 'dark';
+    const current = document.documentElement.classList.contains('light') ? 'light' : 'dark';
     const next    = current === 'dark' ? 'light' : 'dark';
-    Store.set('theme', next);
+    try { localStorage.setItem('sionos_theme', next); } catch(e) {}
     applyTheme(next);
   }
 
   function init() {
-    const saved = Store.get('theme') || 'dark';
+    // Apply saved theme immediately — reads directly from localStorage
+    // to avoid dependency on Store which may not be ready yet
+    let saved = 'dark';
+    try { saved = localStorage.getItem('sionos_theme') || 'dark'; } catch(e) {}
     applyTheme(saved);
   }
 
@@ -71,6 +74,7 @@ const App = (() => {
 
 })();
 
+// Run immediately so theme applies before any render
 App.init();
 
 document.addEventListener('keydown', e => {
