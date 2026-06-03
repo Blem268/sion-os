@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sion OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="os" id="app">
+
+    <!-- Titlebar -->
+    <div class="titlebar">
+      <div class="tb-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-amber"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <span class="tb-title">sion@lifeos:~$</span>
+      <span class="tb-right">
+        <span id="clock"></span>
+        &nbsp;·&nbsp;
+        <span id="today-date"></span>
+      </span>
+    </div>
+
+    <!-- Body -->
+    <div class="body">
+
+      <!-- Sidebar -->
+      <nav class="sidebar" aria-label="Module navigation">
+        <div class="sidebar-logo">SL</div>
+
+        <div class="nav-group">
+          <div class="nav-label">main</div>
+          <button class="nav-item active" data-module="dashboard" onclick="navigate('dashboard', this)">
+            <i class="ti ti-layout-dashboard" aria-hidden="true"></i>
+            <span>dashboard</span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">work</div>
+          <button class="nav-item" data-module="work" onclick="navigate('work', this)">
+            <i class="ti ti-briefcase" aria-hidden="true"></i>
+            <span>work</span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">biz</div>
+          <button class="nav-item" data-module="blem" onclick="navigate('blem', this)">
+            <i class="ti ti-car" aria-hidden="true"></i>
+            <span>blem tuned</span>
+          </button>
+          <button class="nav-item" data-module="younity" onclick="navigate('younity', this)">
+            <i class="ti ti-users" aria-hidden="true"></i>
+            <span>younity</span>
+          </button>
+          <button class="nav-item" data-module="blueport" onclick="navigate('blueport', this)">
+            <i class="ti ti-ship" aria-hidden="true"></i>
+            <span>blueport</span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">life</div>
+          <button class="nav-item" data-module="finance" onclick="navigate('finance', this)">
+            <i class="ti ti-coin" aria-hidden="true"></i>
+            <span>finance</span>
+          </button>
+          <button class="nav-item" data-module="study" onclick="navigate('study', this)">
+            <i class="ti ti-book" aria-hidden="true"></i>
+            <span>study</span>
+          </button>
+          <button class="nav-item" data-module="gym" onclick="navigate('gym', this)">
+            <i class="ti ti-barbell" aria-hidden="true"></i>
+            <span>gym</span>
+          </button>
+        </div>
+
+        <div class="sidebar-footer">
+          <span>v0.2.0-sprint1</span><br/>
+          <span>antigua 🇦🇬</span>
+        </div>
+      </nav>
+
+      <!-- Content -->
+      <main class="content" id="content" aria-live="polite">
+
+        <!-- DASHBOARD -->
+        <section id="mod-dashboard" class="module active">
+          <div class="prompt-line">
+            <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
+            <span class="p-cmd"> load dashboard</span>
+            <span class="cursor"></span>
+          </div>
+
+          <!-- Boot messages -->
+          <div class="boot-msg" id="dash-boot">
+            <div class="boot-line"><span class="ok">[  OK  ]</span> Life OS v0.2.0 — Sprint 1 online</div>
+            <div class="boot-line"><span class="ok">[  OK  ]</span> Dashboard + Milestones loaded</div>
+            <div class="boot-line"><span class="ok">[  OK  ]</span> localStorage connected</div>
+          </div>
+
+          <!-- Greeting -->
+          <div class="dash-greeting">
+            <span id="dash-greeting-text">Good morning</span>, <span class="green">Sion.</span>
+          </div>
+
+          <!-- Metric cards row -->
+          <div class="metric-grid" id="dash-metrics">
+            <!-- D-Max -->
+            <div class="metric-card amber-accent">
+              <div class="mc-label">d-max arrives</div>
+              <div class="mc-val amber" id="dmax-days">—</div>
+              <div class="mc-sub" id="dmax-sub">calculating...</div>
+            </div>
+            <!-- Debt service -->
+            <div class="metric-card red-accent">
+              <div class="mc-label">monthly debt / mo</div>
+              <div class="mc-val red">$3,415</div>
+              <div class="mc-sub">XCD · from aug 2026</div>
+            </div>
+            <!-- Blueport -->
+            <div class="metric-card cyan-accent">
+              <div class="mc-label">blueport launch</div>
+              <div class="mc-val cyan">sep '26</div>
+              <div class="mc-sub" id="blueport-days-sub">calculating...</div>
+            </div>
+            <!-- Weight -->
+            <div class="metric-card green-accent">
+              <div class="mc-label">weight</div>
+              <div class="mc-val white">137 <span style="font-size:12px;color:var(--fg3);">/ 160 lb</span></div>
+              <div class="mc-sub">23 lb to go</div>
+            </div>
+          </div>
+
+          <!-- Progress bars -->
+          <div class="dash-section-label">progress</div>
+          <div class="progress-block">
+            <div class="prog-row">
+              <span class="prog-label">d-max savings</span>
+              <div class="prog-track"><div class="prog-fill amber-fill" id="pb-dmax" style="width:0%"></div></div>
+              <span class="prog-pct amber" id="pb-dmax-pct">0%</span>
+            </div>
+            <div class="prog-row">
+              <span class="prog-label">weight goal</span>
+              <div class="prog-track"><div class="prog-fill green-fill" id="pb-weight" style="width:0%"></div></div>
+              <span class="prog-pct green" id="pb-weight-pct">0%</span>
+            </div>
+            <div class="prog-row">
+              <span class="prog-label">blueport tasks</span>
+              <div class="prog-track"><div class="prog-fill cyan-fill" id="pb-blueport" style="width:7%"></div></div>
+              <span class="prog-pct cyan" id="pb-blueport-pct">7%</span>
+            </div>
+          </div>
+
+          <!-- Task queue -->
+          <div class="dash-section-label">
+            task queue
+            <span class="section-label-sub" id="dash-task-count"></span>
+          </div>
+          <div class="task-list" id="dash-task-list">
+            <!-- Populated by dashboard.js -->
+          </div>
+          <!-- Quick add task -->
+          <div class="quick-add-row">
+            <span class="qa-prompt">+</span>
+            <input
+              class="qa-input"
+              id="dash-quick-add"
+              type="text"
+              placeholder="quick add task..."
+              autocomplete="off"
+              onkeydown="if(event.key==='Enter') Dashboard.quickAddTask()"
+            />
+            <select class="qa-select" id="dash-quick-badge">
+              <option value="work">work</option>
+              <option value="biz">biz</option>
+              <option value="blueport">blueport</option>
+              <option value="study">study</option>
+              <option value="gym">gym</option>
+            </select>
+            <button class="qa-btn" onclick="Dashboard.quickAddTask()">add</button>
+          </div>
+
+          <!-- Milestones -->
+          <div class="dash-section-label">
+            milestones
+            <button class="section-btn" onclick="Dashboard.showAddMilestone()">+ add</button>
+          </div>
+          <div class="milestone-list" id="milestone-list">
+            <!-- Populated by dashboard.js -->
+          </div>
+
+          <!-- Add milestone form (hidden by default) -->
+          <div class="form-panel hidden" id="milestone-form">
+            <div class="form-title">new milestone</div>
+            <div class="form-row">
+              <input class="t-input" id="ms-name" placeholder="milestone name" />
+              <input class="t-input" id="ms-date" type="date" />
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="ms-target" type="number" placeholder="target value (optional)" />
+              <input class="t-input" id="ms-current" type="number" placeholder="current value (optional)" />
+              <input class="t-input" id="ms-unit" placeholder="unit (lbs / XCD / %)" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Dashboard.saveMilestone()">save milestone</button>
+              <button class="t-btn-ghost" onclick="Dashboard.hideMilestoneForm()">cancel</button>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- WORK -->
+        <section id="mod-work" class="module">
+          <div class="prompt-line">
+            <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
+            <span class="p-cmd"> load work --employer=all</span>
+          </div>
+          <div class="coming-soon">
+            <i class="ti ti-briefcase" aria-hidden="true"></i>
+            Work module — Sprint 2 — 23 June 2026
+          </div>
+        </section>
+
+        <!-- BLEM TUNED -->
+        <section id="mod-blem" class="module">
+          <div class="prompt-line">
+            <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
+            <span class="p-cmd"> load blem-tuned --db=jobs</span>
+          </div>
+          <div class="coming-soon">
+            <i class="ti ti-car" aria-hidden="true"></i>
+            Blem Tuned module — Sprint 3 — 30 June 2026
+          </div>
+        </section>
+
+        <!-- YOUNITY -->
+        <section id="mod-younity" class="module">
+          <div class="prompt-line">
+            <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
+            <span class="p-cmd"> load younity --view=crm</span>
+          </div>
+          <div class="coming-soon">
+            <i class="ti ti-users" aria-hidden="true"></i>
+            Younity module — Sprint 4 — 7 July 2026
+          </div>
+        </section>
+
+        <!-- BLUEPORT -->
+        <section id="mod-blueport" class="module">
+          <div class="prompt-line">
+            <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
+            <span class="p-cmd"> load blueport --launch=sep-2026</span>
+          </div>
+          <div class="coming-soon">
+            <i class="ti ti-ship" aria-hidden="true"></i>
+            Blueport module — Sprint 4 — 7 July 2026
+          </div>
+        </section>
+
+        <!-- FINANCE -->
+        <section id="mod-finance" class="module">
+          <div class="prompt-line">
+            <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
+            <span class="p-cmd"> load finance --currency=xcd</span>
+          </div>
+          <div class="coming-soon">
+            <i class="ti ti-coin" aria-hidden="true"></i>
+            Finance module — Sprint 5 — 14 July 2026
+          </div>
+        </section>
+
+        <!-- STUDY -->
+        <section id="mod-study" class="module">
+          <div class="prompt-line">
+            <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
+            <span class="p-cmd"> load study --tracks=3</span>
+          </div>
+          <div class="coming-soon">
+            <i class="ti ti-book" aria-hidden="true"></i>
+            Study module — Sprint 6 — 21 July 2026
+          </div>
+        </section>
+
+        <!-- GYM -->
+        <section id="mod-gym" class="module">
+          <div class="prompt-line">
+            <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
+            <span class="p-cmd"> load gym --goal=160lb</span>
+          </div>
+          <div class="coming-soon">
+            <i class="ti ti-barbell" aria-hidden="true"></i>
+            Gym module — Sprint 6 — 21 July 2026
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="data/store.js"></script>
+  <script src="modules/dashboard.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
