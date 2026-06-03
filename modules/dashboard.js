@@ -1,14 +1,16 @@
 /* ============================================
    SION OS — dashboard.js
-   v0.2.0 — Sprint 1
+   v1.0.0 — Sprint 7
    US-001: Morning priority view
    US-002: D-Max countdown + custom milestones
+   Sprint 7: Live data from all modules + alerts
    ============================================ */
 
 const Dashboard = (() => {
 
   const WEIGHT_START  = 137;
   const WEIGHT_TARGET = 160;
+  const DMAX_MONTHLY  = 3414.83;
 
   function daysUntil(dateStr) {
     const target = new Date(dateStr);
@@ -29,6 +31,13 @@ const Dashboard = (() => {
     return String(str)
       .replace(/&/g,'&amp;').replace(/</g,'&lt;')
       .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function isThisMonth(dateStr) {
+    if (!dateStr) return false;
+    const d = new Date(dateStr);
+    const n = new Date();
+    return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
   }
 
   /* ── Seeds ── */
@@ -52,15 +61,14 @@ const Dashboard = (() => {
     ].forEach(m => Store.insert('milestones', m));
   }
 
-  /* ── Metrics ── */
+  /* ── Live metrics from all modules ── */
   function renderMetrics() {
+    // D-Max countdown
     const dmaxDays = daysUntil('2026-08-01');
     const bpDays   = daysUntil('2026-09-01');
-
-    const dmaxEl  = document.getElementById('dmax-days');
-    const dmaxSub = document.getElementById('dmax-sub');
-    const bpSub   = document.getElementById('blueport-days-sub');
-
+    const dmaxEl   = document.getElementById('dmax-days');
+    const dmaxSub  = document.getElementById('dmax-sub');
+    const bpSub    = document.getElementById('blueport-days-sub');
     if (dmaxEl) {
       if (dmaxDays > 0) {
         dmaxEl.textContent = dmaxDays + 'd';
@@ -71,24 +79,84 @@ const Dashboard = (() => {
       }
     }
     if (bpSub) bpSub.textContent = bpDays > 0 ? bpDays + ' days away' : 'launched!';
+
+    // Live weight from gym module
+    const weightEntries = Store.getAll('gym_weight')
+      .sort((a,b) => new Date(b.logged_date) - new Date(a.logged_date));
+    const currentWeight = weightEntries.length > 0
+      ? parseFloat(weightEntries[0].weight_lbs) : WEIGHT_START;
+    const weightEl = document.getElementById('dash-weight-val');
+    const weightSub = document.getElementById('dash-weight-sub');
+    if (weightEl) weightEl.textContent = currentWeight.toFixed(1);
+    if (weightSub) weightSub.textContent = Math.max(0, WEIGHT_TARGET - currentWeight).toFixed(1) + ' lb to go';
+
+    // Live Blem revenue
+    const blemJobs    = Store.getAll('blem_jobs');
+    const blemRevenue = blemJobs
+      .filter(j => isThisMonth(j.created_at))
+      .reduce((s,j) => s + (parseFloat(j.amount_paid_xcd) || 0), 0);
+    const blemActive  = blemJobs.filter(j => j.status !== 'Complete').length;
+    const blemEl      = document.getElementById('dash-blem-val');
+    const blemSub     = document.getElementById('dash-blem-sub');
+    if (blemEl)  blemEl.textContent  = '$' + blemRevenue.toLocaleString();
+    if (blemSub) blemSub.textContent = blemActive + ' active job' + (blemActive !== 1 ? 's' : '');
+
+    // Live Younity gap
+    const younityClients = Store.getAll('younity_clients');
+    const younityRevenue = younityClients
+      .filter(c => c.stage === 'Active' || c.stage === 'Retained')
+      .reduce((s,c) => s + (parseFloat(c.contract_value_xcd) || 0), 0);
+    const younityGap  = Math.max(0, 2000 - younityRevenue);
+    const younityEl   = document.getElementById('dash-younity-val');
+    const younitySub  = document.getElementById('dash-younity-sub');
+    if (younityEl)  younityEl.textContent  = '$' + younityGap.toLocaleString();
+    if (younitySub) younitySub.textContent = younityGap === 0 ? 'target hit!' : 'gap to $2K target';
+
+    // Finance coverage
+    const income   = Store.getAll('income')
+      .filter(i => isThisMonth(i.received_date))
+      .reduce((s,i) => s + (parseFloat(i.amount_xcd) || 0), 0);
+    const expenses = Store.getAll('expenses')
+      .filter(e => isThisMonth(e.expense_date))
+      .reduce((s,e) => s + (parseFloat(e.amount_xcd) || 0), 0);
+    const net      = income - expenses;
+    const coverage = Math.round(net / DMAX_MONTHLY * 100);
+    const covEl    = document.getElementById('dash-coverage-val');
+    const covSub   = document.getElementById('dash-coverage-sub');
+    if (covEl) {
+      covEl.textContent = coverage + '%';
+      covEl.className   = 'mc-val ' + (coverage >= 120 ? 'green' : coverage >= 100 ? 'amber' : 'red');
+    }
+    if (covSub) covSub.textContent = 'of D-Max payment covered';
   }
 
-  /* ── Progress bars ── */
+  /* ── Live progress bars ── */
   function renderProgress() {
-    const milestones = Store.getAll('milestones');
-    const weightMs   = milestones.find(m => m.name === 'Weight goal');
-    const weightCur  = weightMs ? (weightMs.current_value || WEIGHT_START) : WEIGHT_START;
-    const weightPct  = Math.min(100, Math.max(0,
-      Math.round((weightCur - WEIGHT_START) / (WEIGHT_TARGET - WEIGHT_START) * 100)
+    // Weight
+    const entries = Store.getAll('gym_weight')
+      .sort((a,b) => new Date(b.logged_date) - new Date(a.logged_date));
+    const currentWeight = entries.length > 0
+      ? parseFloat(entries[0].weight_lbs) : WEIGHT_START;
+    const weightPct = Math.min(100, Math.max(0,
+      Math.round((currentWeight - WEIGHT_START) / (WEIGHT_TARGET - WEIGHT_START) * 100)
     ));
 
-    const bpTasks  = Store.getAll('blueport_tasks');
-    const bpDone   = bpTasks.filter(t => t.done).length;
-    const bpTotal  = bpTasks.length || 15;
-    const bpPct    = Math.round(bpDone / bpTotal * 100);
+    // Blueport
+    const bpTasks = Store.getAll('blueport_tasks');
+    const bpDone  = bpTasks.filter(t => t.done).length;
+    const bpTotal = bpTasks.length || 15;
+    const bpPct   = Math.round(bpDone / bpTotal * 100);
+
+    // Younity
+    const yClients = Store.getAll('younity_clients');
+    const yRevenue = yClients
+      .filter(c => c.stage === 'Active' || c.stage === 'Retained')
+      .reduce((s,c) => s + (parseFloat(c.contract_value_xcd) || 0), 0);
+    const yPct = Math.min(100, Math.round(yRevenue / 2000 * 100));
 
     setBar('pb-weight',   'pb-weight-pct',   weightPct, weightPct + '%');
     setBar('pb-blueport', 'pb-blueport-pct', bpPct,     bpPct + '%');
+    setBar('pb-younity',  'pb-younity-pct',  yPct,      yPct + '%');
   }
 
   function setBar(barId, pctId, pct, label) {
@@ -98,7 +166,73 @@ const Dashboard = (() => {
     if (lbl) lbl.textContent = label;
   }
 
-  /* ── Tasks ── */
+  /* ── Smart alerts ── */
+  function renderAlerts() {
+    const el = document.getElementById('dash-alerts');
+    if (!el) return;
+
+    const alerts = [];
+
+    // D-Max coverage
+    const income = Store.getAll('income')
+      .filter(i => isThisMonth(i.received_date))
+      .reduce((s,i) => s + (parseFloat(i.amount_xcd) || 0), 0);
+    const expenses = Store.getAll('expenses')
+      .filter(e => isThisMonth(e.expense_date))
+      .reduce((s,e) => s + (parseFloat(e.amount_xcd) || 0), 0);
+    const net = income - expenses;
+    const coverage = net / DMAX_MONTHLY * 100;
+    if (coverage < 100 && (income > 0 || expenses > 0)) {
+      alerts.push({ level: 'red', msg: 'D-Max coverage is ' + Math.round(coverage) + '% — net income below $3,414.83 this month' });
+    }
+
+    // Overdue Younity next actions
+    const overdueY = Store.getAll('younity_clients')
+      .filter(c => c.next_action_date && new Date(c.next_action_date + 'T00:00:00') < new Date() && c.stage !== 'Lost');
+    if (overdueY.length > 0) {
+      alerts.push({ level: 'amber', msg: overdueY.length + ' Younity client' + (overdueY.length > 1 ? 's' : '') + ' with overdue follow-up' });
+    }
+
+    // Overdue Blueport tasks
+    const overdueB = Store.getAll('blueport_tasks')
+      .filter(t => !t.done && t.due_date && new Date(t.due_date + 'T00:00:00') < new Date());
+    if (overdueB.length > 0) {
+      alerts.push({ level: 'amber', msg: overdueB.length + ' Blueport task' + (overdueB.length > 1 ? 's' : '') + ' overdue — launch at risk' });
+    }
+
+    // No Blem jobs in 14 days
+    const blemJobs = Store.getAll('blem_jobs');
+    if (blemJobs.length > 0) {
+      const latest   = blemJobs.slice().sort((a,b) => new Date(b.created_at) - new Date(a.created_at))[0];
+      const daysSince = Math.floor((new Date() - new Date(latest.created_at)) / 86400000);
+      if (daysSince >= 14) {
+        alerts.push({ level: 'amber', msg: 'No Blem Tuned job logged in ' + daysSince + ' days — pipeline running dry?' });
+      }
+    }
+
+    // Weight not logged in 3 days
+    const weightEntries = Store.getAll('gym_weight');
+    if (weightEntries.length > 0) {
+      const latest    = weightEntries.slice().sort((a,b) => new Date(b.logged_date) - new Date(a.logged_date))[0];
+      const daysSince = Math.floor((new Date() - new Date(latest.logged_date + 'T00:00:00')) / 86400000);
+      if (daysSince >= 3) {
+        alerts.push({ level: 'gray', msg: 'Weight not logged in ' + daysSince + ' days — still on track?' });
+      }
+    }
+
+    if (!alerts.length) {
+      el.innerHTML = '<div class="alert-ok"><i class="ti ti-circle-check" aria-hidden="true"></i> All systems clear</div>';
+      return;
+    }
+
+    el.innerHTML = alerts.map(a => `
+      <div class="alert-item alert-${a.level}">
+        <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+        ${escapeHtml(a.msg)}
+      </div>`).join('');
+  }
+
+  /* ── Task queue ── */
   function renderTasks() {
     const el      = document.getElementById('dash-task-list');
     const countEl = document.getElementById('dash-task-count');
@@ -160,7 +294,6 @@ const Dashboard = (() => {
   function renderMilestones() {
     const el = document.getElementById('milestone-list');
     if (!el) return;
-
     const milestones = Store.getAll('milestones');
     if (!milestones.length) {
       el.innerHTML = '<div class="task-empty">no milestones — add one above</div>';
@@ -228,8 +361,7 @@ const Dashboard = (() => {
 
   function clearForm() {
     ['ms-name','ms-date','ms-target','ms-current','ms-unit'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = '';
+      const el = document.getElementById(id); if (el) el.value = '';
     });
     document.getElementById('milestone-form').dataset.editId = '';
   }
@@ -271,20 +403,24 @@ const Dashboard = (() => {
     renderMilestones();
   }
 
-  /* ── Init ── */
-  function init() {
-    const el = document.getElementById('dash-greeting-text');
-    if (el) el.textContent = getGreeting();
-    seedTasks();
-    seedMilestones();
+  function renderAll() {
+    const greeting = document.getElementById('dash-greeting-text');
+    if (greeting) greeting.textContent = getGreeting();
     renderMetrics();
     renderProgress();
+    renderAlerts();
     renderTasks();
     renderMilestones();
   }
 
+  function init() {
+    seedTasks();
+    seedMilestones();
+    renderAll();
+  }
+
   return {
-    init, renderTasks, renderMilestones, renderMetrics, renderProgress,
+    init, renderAll, renderTasks, renderMilestones, renderMetrics, renderProgress,
     toggleTask, deleteTask, quickAddTask,
     showAddMilestone, hideMilestoneForm, saveMilestone,
     editMilestone, deleteMilestone,

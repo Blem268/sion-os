@@ -89,7 +89,10 @@
         </div>
 
         <div class="sidebar-footer">
-          <span>v0.7.0-sprint6</span><br/>
+          <button class="export-btn" onclick="App.exportData()" title="Export all data as JSON backup">
+            <i class="ti ti-download" aria-hidden="true"></i> export
+          </button>
+          <span>v1.0.0</span><br/>
           <span>antigua 🇦🇬</span>
         </div>
       </nav>
@@ -121,11 +124,6 @@
               <div class="mc-val amber" id="dmax-days">—</div>
               <div class="mc-sub" id="dmax-sub">calculating...</div>
             </div>
-            <div class="metric-card red-accent">
-              <div class="mc-label">debt service / mo</div>
-              <div class="mc-val red">$3,415</div>
-              <div class="mc-sub">XCD · from aug 2026</div>
-            </div>
             <div class="metric-card cyan-accent">
               <div class="mc-label">blueport launch</div>
               <div class="mc-val cyan">sep '26</div>
@@ -133,18 +131,41 @@
             </div>
             <div class="metric-card green-accent">
               <div class="mc-label">weight</div>
-              <div class="mc-val white">137 <span style="font-size:12px;color:var(--fg3);">/ 160 lb</span></div>
-              <div class="mc-sub">23 lb to go</div>
+              <div class="mc-val white" id="dash-weight-val">137</div>
+              <div class="mc-sub" id="dash-weight-sub">23 lb to go</div>
+            </div>
+            <div class="metric-card" id="fin-coverage-dash">
+              <div class="mc-label">d-max coverage</div>
+              <div class="mc-val amber" id="dash-coverage-val">0%</div>
+              <div class="mc-sub" id="dash-coverage-sub">of payment covered</div>
             </div>
           </div>
 
+          <!-- Live biz pulse -->
+          <div class="dash-biz-row">
+            <div class="dash-biz-card">
+              <div class="dash-biz-label"><i class="ti ti-car" aria-hidden="true"></i> blem tuned</div>
+              <div class="dash-biz-val amber" id="dash-blem-val">$0</div>
+              <div class="dash-biz-sub" id="dash-blem-sub">this month</div>
+            </div>
+            <div class="dash-biz-card">
+              <div class="dash-biz-label"><i class="ti ti-users" aria-hidden="true"></i> younity gap</div>
+              <div class="dash-biz-val red" id="dash-younity-val">$2,000</div>
+              <div class="dash-biz-sub" id="dash-younity-sub">to $2K target</div>
+            </div>
+            <div class="dash-biz-card">
+              <div class="dash-biz-label"><i class="ti ti-ship" aria-hidden="true"></i> blueport</div>
+              <div class="dash-biz-val cyan">7%</div>
+              <div class="dash-biz-sub">launch progress</div>
+            </div>
+          </div>
+
+          <!-- Alerts -->
+          <div class="dash-section-label">system alerts</div>
+          <div id="dash-alerts"></div>
+
           <div class="dash-section-label">progress</div>
           <div class="progress-block">
-            <div class="prog-row">
-              <span class="prog-label">d-max savings</span>
-              <div class="prog-track"><div class="prog-fill amber-fill" id="pb-dmax" style="width:0%"></div></div>
-              <span class="prog-pct amber" id="pb-dmax-pct">0%</span>
-            </div>
             <div class="prog-row">
               <span class="prog-label">weight goal</span>
               <div class="prog-track"><div class="prog-fill green-fill" id="pb-weight" style="width:0%"></div></div>
@@ -154,6 +175,11 @@
               <span class="prog-label">blueport tasks</span>
               <div class="prog-track"><div class="prog-fill cyan-fill" id="pb-blueport" style="width:7%"></div></div>
               <span class="prog-pct cyan" id="pb-blueport-pct">7%</span>
+            </div>
+            <div class="prog-row">
+              <span class="prog-label">younity $2K</span>
+              <div class="prog-track"><div class="prog-fill green-fill" id="pb-younity" style="width:0%"></div></div>
+              <span class="prog-pct green" id="pb-younity-pct">0%</span>
             </div>
           </div>
 

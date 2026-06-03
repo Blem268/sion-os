@@ -1221,3 +1221,120 @@ html, body {
 /* Light mode — scrollbar */
 :root.light ::-webkit-scrollbar-track { background: #eeeeee; }
 :root.light ::-webkit-scrollbar-thumb { background: #cccccc; }
+
+/* ============================================
+   SPRINT 7 — Integration + Polish
+   ============================================ */
+
+/* ── Alert strip ── */
+#dash-alerts {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.alert-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  font-size: 11px;
+  border: 0.5px solid transparent;
+}
+
+.alert-item i { font-size: 13px; flex-shrink: 0; }
+
+.alert-red   { background: var(--red-dim);   color: var(--red);   border-color: #5a1020; }
+.alert-amber { background: var(--amber-dim); color: var(--amber); border-color: #5a3800; }
+.alert-gray  { background: var(--bg2);       color: var(--fg3);   border-color: var(--border2); }
+
+.alert-ok {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: var(--green);
+  background: var(--green-dim);
+  border: 0.5px solid var(--green2);
+  border-radius: var(--radius);
+}
+
+.alert-ok i { font-size: 14px; }
+
+/* ── Biz pulse row ── */
+.dash-biz-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.dash-biz-card {
+  background: var(--bg1);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+
+.dash-biz-label {
+  font-size: 9px;
+  color: var(--fg3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dash-biz-label i { font-size: 12px; }
+
+.dash-biz-val {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: var(--mono);
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+.dash-biz-sub {
+  font-size: 9px;
+  color: var(--fg3);
+}
+
+/* ── Export button ── */
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  background: none;
+  border: 0.5px solid var(--border2);
+  border-radius: 3px;
+  padding: 5px 8px;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--fg3);
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: color 0.1s, border-color 0.1s;
+}
+
+.export-btn:hover {
+  color: var(--green);
+  border-color: var(--green2);
+}
+
+.export-btn i { font-size: 11px; }
+
+/* ── Light mode alert overrides ── */
+:root.light .alert-red   { background: #ffe8ea; color: #7a0010; border-color: #cc1122; }
+:root.light .alert-amber { background: #fff0d4; color: #7a3a00; border-color: #b35a00; }
+:root.light .alert-ok    { background: #d4f5e4; color: #005a2a; border-color: #007a3d; }
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .dash-biz-row { grid-template-columns: 1fr 1fr; }
+  .dash-biz-row .dash-biz-card:last-child { grid-column: 1 / -1; }
+}

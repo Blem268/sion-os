@@ -13,7 +13,7 @@
 | 4 | Younity + Blueport | ✅ Done | 7–11 Jul 2026 |
 | 5 | Finance | ✅ Done | 14–18 Jul 2026 |
 | 6 | Study + Gym | ✅ Done | 21–25 Jul 2026 |
-| 7 | Polish + Ship | 🔜 Next | 28 Jul–1 Aug 2026 |
+| 7 | Polish + Ship | ✅ Done | 28 Jul–1 Aug 2026 |
 
 ## Live URL
 [https://blem268.github.io/sion-os](https://blem268.github.io/sion-os)
@@ -26,3 +26,12 @@ No build step. Open `index.html` in any browser.
 - JetBrains Mono · Tabler Icons
 - localStorage → SQLite (Phase 2)
 - GitHub Pages
+
+---
+
+## v1.0.0 — Shipped
+
+All 8 modules live. Dashboard pulls real data from every module.
+Smart alerts. Light/dark theme. JSON data export. Cmd+K quick-add.
+
+**Phase 2 next:** Electron desktop app + SQLite local database.

@@ -62,15 +62,32 @@ const App = (() => {
     applyTheme(next);
   }
 
+  /* ── Export all data as JSON ── */
+  function exportData() {
+    try {
+      const json     = Store.exportJSON();
+      const blob     = new Blob([json], { type: 'application/json' });
+      const url      = URL.createObjectURL(blob);
+      const a        = document.createElement('a');
+      const date     = new Date().toISOString().split('T')[0];
+      a.href         = url;
+      a.download     = 'sionos-backup-' + date + '.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch(e) {
+      console.error('[SionOS] Export failed:', e);
+    }
+  }
+
   function init() {
-    // Apply saved theme immediately — reads directly from localStorage
-    // to avoid dependency on Store which may not be ready yet
     let saved = 'dark';
     try { saved = localStorage.getItem('sionos_theme') || 'dark'; } catch(e) {}
     applyTheme(saved);
   }
 
-  return { toggleTheme, init };
+  return { toggleTheme, exportData, init };
 
 })();
 
@@ -80,10 +97,20 @@ App.init();
 document.addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
     e.preventDefault();
-    const input = document.getElementById('dash-quick-add');
-    if (input) { navigate('dashboard', document.querySelector('[data-module="dashboard"]')); input.focus(); }
+    const dashBtn = document.querySelector('[data-module="dashboard"]');
+    navigate('dashboard', dashBtn);
+    setTimeout(() => {
+      const input = document.getElementById('dash-quick-add');
+      if (input) input.focus();
+    }, 50);
+  }
+  // Escape closes any open form
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.form-panel:not(.hidden)').forEach(f => {
+      f.classList.add('hidden');
+    });
   }
 });
 
-console.log('%c SION OS v0.7.0 ', 'background:#00ff88;color:#080808;font-weight:bold;font-family:monospace;padding:2px 8px;');
-console.log('%c Sprint 6 — Study + Gym online. ', 'color:#666;font-family:monospace;');
+console.log('%c SION OS v1.0.0 ', 'background:#00ff88;color:#080808;font-weight:bold;font-family:monospace;padding:2px 8px;');
+console.log('%c v1.0.0 — All modules online. Ship it. ', 'color:#666;font-family:monospace;');
