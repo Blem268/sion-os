@@ -48,5 +48,5 @@ document.addEventListener('keydown', e => {
   }
 });
 
-console.log('%c SION OS v0.2.0 ', 'background:#00ff88;color:#080808;font-weight:bold;font-family:monospace;padding:2px 8px;');
-console.log('%c Sprint 1 — Dashboard + Milestones online. ', 'color:#666;font-family:monospace;');
+console.log('%c SION OS v0.3.0 ', 'background:#00ff88;color:#080808;font-weight:bold;font-family:monospace;padding:2px 8px;');
+console.log('%c Sprint 2 — Work module online. ', 'color:#666;font-family:monospace;');

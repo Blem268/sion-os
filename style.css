@@ -380,3 +380,267 @@ html, body {
   .quick-add-row { flex-wrap:wrap; }
   .content { padding:14px 16px; }
 }
+
+/* ============================================
+   SPRINT 2 — Work module styles
+   ============================================ */
+
+/* ── Employer tabs ── */
+.work-tabs {
+  display: flex;
+  gap: 6px;
+  background: var(--bg1);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px;
+}
+
+.work-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 1;
+  padding: 8px 12px;
+  background: none;
+  border: 0.5px solid transparent;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--fg3);
+  cursor: pointer;
+  transition: all 0.1s;
+  justify-content: center;
+}
+
+.work-tab i { font-size: 14px; }
+
+.work-tab:hover {
+  color: var(--fg);
+  background: var(--bg2);
+}
+
+.work-tab.active {
+  color: var(--cyan);
+  background: var(--cyan-dim);
+  border-color: #005a6a;
+}
+
+.tab-count {
+  background: var(--bg3);
+  color: var(--fg3);
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.work-tab.active .tab-count {
+  background: #005a6a;
+  color: var(--cyan);
+}
+
+/* ── Work header ── */
+.work-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg1);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+
+.work-employer-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--fg);
+}
+
+.work-employer-role {
+  font-size: 10px;
+  color: var(--fg3);
+  margin-top: 3px;
+}
+
+.work-header-stats {
+  display: flex;
+  gap: 16px;
+}
+
+.wstat {
+  font-size: 10px;
+  color: var(--fg3);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wstat-val {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ── Rhythm grid ── */
+.work-rhythm-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.rhythm-card {
+  background: var(--bg1);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px;
+  transition: border-color 0.2s;
+}
+
+.rhythm-card.rhythm-done    { border-color: var(--green2); background: var(--green-dim); }
+.rhythm-card.rhythm-partial { border-color: #5a3800;       background: var(--amber-dim); }
+
+.rhythm-week {
+  font-size: 9px;
+  color: var(--fg3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.rhythm-card.rhythm-done    .rhythm-week { color: var(--green); }
+.rhythm-card.rhythm-partial .rhythm-week { color: var(--amber); }
+
+.rhythm-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.rhythm-task {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--fg2);
+  cursor: pointer;
+  line-height: 1.4;
+  transition: color 0.1s;
+}
+
+.rhythm-task:hover { color: var(--fg); }
+
+.rhythm-task.rhythm-task-done { color: var(--fg3); text-decoration: line-through; }
+
+.rhythm-check {
+  width: 12px;
+  height: 12px;
+  border: 0.5px solid var(--fg3);
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  transition: all 0.1s;
+}
+
+.rhythm-check.checked {
+  background: var(--green-dim);
+  border-color: var(--green2);
+  color: var(--green);
+}
+
+/* ── Work task body ── */
+.work-task-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.work-task-title {
+  font-size: 11px;
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.work-recur-icon {
+  font-size: 11px;
+  color: var(--fg3);
+}
+
+.work-task-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.work-priority {
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 2px;
+}
+
+.priority-high { background: var(--red-dim);    color: var(--red);    border: 0.5px solid #5a1020; }
+.priority-med  { background: var(--amber-dim);  color: var(--amber);  border: 0.5px solid #5a3800; }
+.priority-low  { background: var(--bg3);        color: var(--fg3);    border: 0.5px solid var(--border2); }
+
+.work-week-badge {
+  font-size: 9px;
+  color: var(--fg3);
+  background: var(--bg3);
+  border: 0.5px solid var(--border2);
+  border-radius: 2px;
+  padding: 1px 5px;
+}
+
+.work-due-badge {
+  font-size: 9px;
+  color: var(--cyan);
+  background: var(--cyan-dim);
+  border: 0.5px solid #005a6a;
+  border-radius: 2px;
+  padding: 1px 5px;
+}
+
+.work-note-preview {
+  font-size: 9px;
+  color: var(--fg3);
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.status-blocked { border-left: 2px solid var(--red); }
+.status-inprog  { border-left: 2px solid var(--amber); }
+
+/* ── Work checkbox label ── */
+.work-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--fg2);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.work-checkbox-label input[type="checkbox"] {
+  accent-color: var(--green);
+  width: 13px;
+  height: 13px;
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .work-rhythm-grid { grid-template-columns: 1fr 1fr; }
+  .work-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .work-tabs { flex-direction: column; }
+}

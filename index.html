@@ -85,7 +85,7 @@
         </div>
 
         <div class="sidebar-footer">
-          <span>v0.2.0-sprint1</span><br/>
+          <span>v0.3.0-sprint2</span><br/>
           <span>antigua 🇦🇬</span>
         </div>
       </nav>
@@ -202,9 +202,83 @@
             <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
             <span class="p-cmd"> load work --employer=all</span>
           </div>
-          <div class="coming-soon">
-            <i class="ti ti-briefcase" aria-hidden="true"></i>
-            Work module — Sprint 2 — 23 June 2026
+
+          <div class="work-tabs">
+            <button class="work-tab active" data-employer="Silcomm Engineering" onclick="Work.switchTab('Silcomm Engineering', this)">
+              <i class="ti ti-building" aria-hidden="true"></i>
+              silcomm engineering
+              <span class="tab-count" id="tab-count-silcomm">0</span>
+            </button>
+            <button class="work-tab" data-employer="NovaTrust" onclick="Work.switchTab('NovaTrust', this)">
+              <i class="ti ti-building-bank" aria-hidden="true"></i>
+              novatrust
+              <span class="tab-count" id="tab-count-novatrust">0</span>
+            </button>
+          </div>
+
+          <div class="work-header">
+            <div>
+              <div class="work-employer-name" id="work-employer-name">Silcomm Engineering</div>
+              <div class="work-employer-role" id="work-employer-role">Senior Admin</div>
+            </div>
+            <div class="work-header-stats">
+              <span class="wstat"><span class="wstat-val amber" id="work-open-count">0</span> open</span>
+              <span class="wstat"><span class="wstat-val green" id="work-done-count">0</span> done</span>
+              <span class="wstat"><span class="wstat-val red" id="work-blocked-count">0</span> blocked</span>
+            </div>
+          </div>
+
+          <div id="work-rhythm-panel">
+            <div class="dash-section-label">
+              monthly rhythm
+              <button class="section-btn" id="reset-recurring-btn" onclick="Work.resetRecurring()">&#8635; reset month</button>
+            </div>
+            <div class="work-rhythm-grid" id="work-rhythm-grid"></div>
+          </div>
+
+          <div class="dash-section-label">
+            tasks
+            <span class="section-label-sub" id="work-task-count"></span>
+            <button class="section-btn" onclick="Work.showAddTask()">+ add task</button>
+          </div>
+          <div class="task-list" id="work-task-list"></div>
+
+          <div class="form-panel hidden" id="work-task-form">
+            <div class="form-title">new task &mdash; <span id="work-form-employer"></span></div>
+            <div class="form-row">
+              <input class="t-input" id="wt-title" placeholder="task title" style="flex:2" />
+              <select class="t-input" id="wt-priority" style="flex:0 0 110px">
+                <option value="High">High</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <select class="t-input" id="wt-status">
+                <option value="To Do">To Do</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Blocked">Blocked</option>
+              </select>
+              <select class="t-input" id="wt-week">
+                <option value="">No week</option>
+                <option value="Week 1">Week 1</option>
+                <option value="Week 2">Week 2</option>
+                <option value="Week 3">Week 3</option>
+                <option value="Week 4">Week 4</option>
+              </select>
+              <input class="t-input" id="wt-due" type="date" />
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="wt-notes" placeholder="notes (optional)" />
+              <label class="work-checkbox-label">
+                <input type="checkbox" id="wt-recurring" />
+                <span>recurring</span>
+              </label>
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Work.saveTask()">save task</button>
+              <button class="t-btn-ghost" onclick="Work.hideTaskForm()">cancel</button>
+            </div>
           </div>
         </section>
 
@@ -286,6 +360,7 @@
 
   <script src="data/store.js"></script>
   <script src="modules/dashboard.js"></script>
+  <script src="modules/work.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
