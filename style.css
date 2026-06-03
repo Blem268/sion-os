@@ -950,3 +950,16 @@ html, body {
 @media (max-width: 640px) {
   .y-pipeline { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* ============================================
+   SPRINT 5 — Finance styles
+   ============================================ */
+
+.fin-highlight-row td {
+  color: var(--green);
+  font-weight: 500;
+}
+
+.fin-highlight-row:hover td {
+  background: var(--green-dim);
+}

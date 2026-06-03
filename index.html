@@ -85,7 +85,7 @@
         </div>
 
         <div class="sidebar-footer">
-          <span>v0.5.0-sprint4</span><br/>
+          <span>v0.6.0-sprint5</span><br/>
           <span>antigua 🇦🇬</span>
         </div>
       </nav>
@@ -593,10 +593,173 @@
             <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
             <span class="p-cmd"> load finance --currency=xcd</span>
           </div>
-          <div class="coming-soon">
-            <i class="ti ti-coin" aria-hidden="true"></i>
-            Finance module — Sprint 5 — 14 July 2026
+
+          <!-- Metrics -->
+          <div class="metric-grid">
+            <div class="metric-card green-accent">
+              <div class="mc-label">income this month</div>
+              <div class="mc-val green" id="fin-income">$0</div>
+              <div class="mc-sub">XCD collected</div>
+            </div>
+            <div class="metric-card red-accent">
+              <div class="mc-label">expenses this month</div>
+              <div class="mc-val red" id="fin-expenses">$0</div>
+              <div class="mc-sub">XCD spent</div>
+            </div>
+            <div class="metric-card amber-accent">
+              <div class="mc-label">net income</div>
+              <div class="mc-val amber" id="fin-net">$0</div>
+              <div class="mc-sub">income − expenses</div>
+            </div>
+            <div class="metric-card" id="fin-coverage-card">
+              <div class="mc-label">d-max coverage</div>
+              <div class="mc-val" id="fin-coverage">0%</div>
+              <div class="mc-sub">of $3,414.83 / mo</div>
+            </div>
           </div>
+
+          <!-- Monthly commitments -->
+          <div class="dash-section-label">
+            fixed commitments
+            <span class="section-label-sub" id="fin-commit-total"></span>
+            <button class="section-btn" onclick="Finance.showCommitForm()">+ add</button>
+          </div>
+          <div class="task-list" id="fin-commit-list"></div>
+          <div class="form-panel hidden" id="fin-commit-form">
+            <div class="form-title">add commitment</div>
+            <div class="form-row">
+              <input class="t-input" id="fc-name"     placeholder="name (e.g. Sagicor Life Insurance)" style="flex:2" />
+              <select class="t-input" id="fc-type" style="flex:0 0 130px">
+                <option value="Loan">Loan</option>
+                <option value="Insurance">Insurance</option>
+                <option value="Subscription">Subscription</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="fc-amount"   type="number" placeholder="monthly amount (XCD)" />
+              <input class="t-input" id="fc-start"    type="date"   title="Start date" />
+              <input class="t-input" id="fc-end"      type="date"   title="End date (leave blank if ongoing)" />
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="fc-provider" placeholder="provider (optional)" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Finance.saveCommitment()">save</button>
+              <button class="t-btn-ghost" onclick="Finance.hideCommitForm()">cancel</button>
+            </div>
+          </div>
+
+          <!-- Income log -->
+          <div class="dash-section-label">
+            income log
+            <button class="section-btn" onclick="Finance.showIncomeForm()">+ log income</button>
+          </div>
+          <div class="blem-table-wrap">
+            <table class="blem-table">
+              <thead>
+                <tr><th>source</th><th>category</th><th>amount (xcd)</th><th>date</th><th>notes</th><th></th></tr>
+              </thead>
+              <tbody id="fin-income-tbody">
+                <tr><td colspan="6" class="blem-empty">no income logged yet</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="form-panel hidden" id="fin-income-form">
+            <div class="form-title">log income</div>
+            <div class="form-row">
+              <select class="t-input" id="fi-source">
+                <option value="Silcomm Engineering">Silcomm Engineering</option>
+                <option value="NovaTrust">NovaTrust</option>
+                <option value="Blem Tuned">Blem Tuned</option>
+                <option value="Younity Consultancy">Younity Consultancy</option>
+                <option value="Blueport Agency">Blueport Agency</option>
+                <option value="OS Builder">OS Builder</option>
+                <option value="Other">Other</option>
+              </select>
+              <select class="t-input" id="fi-category">
+                <option value="Salary">Salary</option>
+                <option value="Business Revenue">Business Revenue</option>
+                <option value="Bonus">Bonus</option>
+                <option value="Freelance">Freelance</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="fi-amount" type="number" placeholder="amount (XCD)" />
+              <input class="t-input" id="fi-date"   type="date" />
+              <input class="t-input" id="fi-notes"  placeholder="notes (optional)" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Finance.saveIncome()">save</button>
+              <button class="t-btn-ghost" onclick="Finance.hideIncomeForm()">cancel</button>
+            </div>
+          </div>
+
+          <!-- Expense log -->
+          <div class="dash-section-label">
+            expense log
+            <button class="section-btn" onclick="Finance.showExpenseForm()">+ log expense</button>
+          </div>
+          <div class="blem-table-wrap">
+            <table class="blem-table">
+              <thead>
+                <tr><th>item</th><th>category</th><th>amount (xcd)</th><th>date</th><th>flags</th><th></th></tr>
+              </thead>
+              <tbody id="fin-expense-tbody">
+                <tr><td colspan="6" class="blem-empty">no expenses logged yet</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="form-panel hidden" id="fin-expense-form">
+            <div class="form-title">log expense</div>
+            <div class="form-row">
+              <input class="t-input" id="fe-item"     placeholder="expense item" style="flex:2" />
+              <select class="t-input" id="fe-category" style="flex:0 0 160px">
+                <option value="D-Max Loan">D-Max Loan</option>
+                <option value="Insurance">Insurance</option>
+                <option value="Fuel">Fuel</option>
+                <option value="Food">Food</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Business Expense">Business Expense</option>
+                <option value="Study">Study</option>
+                <option value="Gym">Gym</option>
+                <option value="Personal">Personal</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="fe-amount" type="number" placeholder="amount (XCD)" />
+              <input class="t-input" id="fe-date"   type="date" />
+              <input class="t-input" id="fe-notes"  placeholder="notes (optional)" />
+            </div>
+            <div class="form-row">
+              <label class="work-checkbox-label">
+                <input type="checkbox" id="fe-is-dmax" />
+                <span>D-Max loan payment</span>
+              </label>
+              <label class="work-checkbox-label">
+                <input type="checkbox" id="fe-is-biz" />
+                <span>business expense</span>
+              </label>
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Finance.saveExpense()">save</button>
+              <button class="t-btn-ghost" onclick="Finance.hideExpenseForm()">cancel</button>
+            </div>
+          </div>
+
+          <!-- D-Max amortisation milestones -->
+          <div class="dash-section-label">d-max amortisation milestones</div>
+          <div class="blem-table-wrap">
+            <table class="blem-table">
+              <thead>
+                <tr><th>milestone</th><th>date</th><th>balance remaining (xcd)</th><th>status</th></tr>
+              </thead>
+              <tbody id="fin-amort-tbody"></tbody>
+            </table>
+          </div>
+
         </section>
 
         <!-- STUDY -->
@@ -633,6 +796,7 @@
   <script src="modules/blem.js"></script>
   <script src="modules/younity.js"></script>
   <script src="modules/blueport.js"></script>
+  <script src="modules/finance.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

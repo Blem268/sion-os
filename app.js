@@ -48,5 +48,5 @@ document.addEventListener('keydown', e => {
   }
 });
 
-console.log('%c SION OS v0.5.0 ', 'background:#00ff88;color:#080808;font-weight:bold;font-family:monospace;padding:2px 8px;');
-console.log('%c Sprint 4 — Younity + Blueport online. ', 'color:#666;font-family:monospace;');
+console.log('%c SION OS v0.6.0 ', 'background:#00ff88;color:#080808;font-weight:bold;font-family:monospace;padding:2px 8px;');
+console.log('%c Sprint 5 — Finance online. ', 'color:#666;font-family:monospace;');

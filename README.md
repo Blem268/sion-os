@@ -11,8 +11,8 @@
 | 2 | Work | ✅ Done | 23–27 Jun 2026 |
 | 3 | Blem Tuned | ✅ Done | 30 Jun–4 Jul 2026 |
 | 4 | Younity + Blueport | ✅ Done | 7–11 Jul 2026 |
-| 5 | Finance | 🔜 Next | 14–18 Jul 2026 |
-| 6 | Study + Gym | ⏳ | 21–25 Jul 2026 |
+| 5 | Finance | ✅ Done | 14–18 Jul 2026 |
+| 6 | Study + Gym | 🔜 Next | 21–25 Jul 2026 |
 | 7 | Polish + Ship | ⏳ | 28 Jul–1 Aug 2026 |
 
 ## Live URL
