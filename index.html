@@ -85,7 +85,7 @@
         </div>
 
         <div class="sidebar-footer">
-          <span>v0.4.0-sprint3</span><br/>
+          <span>v0.5.0-sprint4</span><br/>
           <span>antigua 🇦🇬</span>
         </div>
       </nav>
@@ -416,9 +416,101 @@
             <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
             <span class="p-cmd"> load younity --view=crm</span>
           </div>
-          <div class="coming-soon">
-            <i class="ti ti-users" aria-hidden="true"></i>
-            Younity module — Sprint 4 — 7 July 2026
+
+          <!-- Metrics -->
+          <div class="metric-grid">
+            <div class="metric-card green-accent">
+              <div class="mc-label">monthly target</div>
+              <div class="mc-val green">$2,000</div>
+              <div class="mc-sub">XCD / month</div>
+            </div>
+            <div class="metric-card amber-accent">
+              <div class="mc-label">gap to target</div>
+              <div class="mc-val amber" id="y-gap">$2,000</div>
+              <div class="mc-sub" id="y-gap-sub">no active revenue yet</div>
+            </div>
+            <div class="metric-card cyan-accent">
+              <div class="mc-label">active clients</div>
+              <div class="mc-val cyan" id="y-active">0</div>
+              <div class="mc-sub">active + retained</div>
+            </div>
+            <div class="metric-card">
+              <div class="mc-label">pipeline value</div>
+              <div class="mc-val white" id="y-pipeline">$0</div>
+              <div class="mc-sub">XCD total</div>
+            </div>
+          </div>
+
+          <!-- Pipeline stages -->
+          <div class="dash-section-label">
+            pipeline
+            <span class="section-label-sub" id="y-client-count"></span>
+            <button class="section-btn" onclick="Younity.showClientForm()">+ add client</button>
+          </div>
+          <div class="y-pipeline" id="y-pipeline-board"></div>
+
+          <!-- Client table -->
+          <div class="dash-section-label">all clients</div>
+          <div class="blem-table-wrap">
+            <table class="blem-table">
+              <thead>
+                <tr>
+                  <th>client</th>
+                  <th>business</th>
+                  <th>stage</th>
+                  <th>service</th>
+                  <th>value (xcd)</th>
+                  <th>next action</th>
+                  <th>due</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="y-client-tbody">
+                <tr><td colspan="8" class="blem-empty">no clients yet</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Add client form -->
+          <div class="form-panel hidden" id="y-client-form">
+            <div class="form-title">add client</div>
+            <div class="form-row">
+              <input class="t-input" id="yc-name"    placeholder="client name" />
+              <input class="t-input" id="yc-biz"     placeholder="business name" />
+            </div>
+            <div class="form-row">
+              <select class="t-input" id="yc-stage">
+                <option value="Lead">Lead</option>
+                <option value="Proposal Sent">Proposal Sent</option>
+                <option value="Onboarding">Onboarding</option>
+                <option value="Active">Active</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Retained">Retained</option>
+                <option value="Lost">Lost</option>
+              </select>
+              <select class="t-input" id="yc-service">
+                <option value="AI Systems Audit">AI Systems Audit</option>
+                <option value="Automation Setup">Automation Setup</option>
+                <option value="CRM Build">CRM Build</option>
+                <option value="Training">Training</option>
+                <option value="Strategy">Strategy</option>
+                <option value="OS Build">OS Build</option>
+                <option value="Other">Other</option>
+              </select>
+              <input class="t-input" id="yc-value" type="number" placeholder="contract value (XCD)" />
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="yc-next-action" placeholder="next action..." style="flex:2" />
+              <input class="t-input" id="yc-next-date"   type="date" />
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="yc-country"  placeholder="country" />
+              <input class="t-input" id="yc-referred" placeholder="referred by (optional)" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Younity.saveClient()">save client</button>
+              <button class="t-btn-ghost" onclick="Younity.hideClientForm()">cancel</button>
+            </div>
           </div>
         </section>
 
@@ -428,9 +520,70 @@
             <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
             <span class="p-cmd"> load blueport --launch=sep-2026</span>
           </div>
-          <div class="coming-soon">
-            <i class="ti ti-ship" aria-hidden="true"></i>
-            Blueport module — Sprint 4 — 7 July 2026
+
+          <!-- Metrics -->
+          <div class="metric-grid">
+            <div class="metric-card cyan-accent">
+              <div class="mc-label">launch target</div>
+              <div class="mc-val cyan">sep 2026</div>
+              <div class="mc-sub" id="bp-days-sub">calculating...</div>
+            </div>
+            <div class="metric-card amber-accent">
+              <div class="mc-label">tasks complete</div>
+              <div class="mc-val amber" id="bp-pct">0%</div>
+              <div class="mc-sub" id="bp-task-sub">0 of 15 done</div>
+            </div>
+            <div class="metric-card" id="bp-status-card">
+              <div class="mc-label">launch status</div>
+              <div class="mc-val green" id="bp-status-val">on track</div>
+              <div class="mc-sub" id="bp-status-sub">projected completion ok</div>
+            </div>
+            <div class="metric-card red-accent">
+              <div class="mc-label">d-max debt / mo</div>
+              <div class="mc-val red">$3,415</div>
+              <div class="mc-sub">must cover from aug</div>
+            </div>
+          </div>
+
+          <!-- Progress bar -->
+          <div class="progress-block">
+            <div class="prog-row">
+              <span class="prog-label">launch progress</span>
+              <div class="prog-track">
+                <div class="prog-fill cyan-fill" id="bp-prog-bar" style="width:7%"></div>
+              </div>
+              <span class="prog-pct cyan" id="bp-prog-pct">7%</span>
+            </div>
+          </div>
+
+          <!-- Checklist grouped by category -->
+          <div class="dash-section-label">
+            launch checklist
+            <button class="section-btn" onclick="Blueport.showTaskForm()">+ add task</button>
+          </div>
+          <div id="bp-checklist"></div>
+
+          <!-- Add task form -->
+          <div class="form-panel hidden" id="bp-task-form">
+            <div class="form-title">add launch task</div>
+            <div class="form-row">
+              <input class="t-input" id="bt-title" placeholder="task title" style="flex:2" />
+              <select class="t-input" id="bt-category" style="flex:0 0 140px">
+                <option value="Legal">Legal</option>
+                <option value="Operations">Operations</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Finance">Finance</option>
+                <option value="Technology">Technology</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="bt-due" type="date" />
+              <input class="t-input" id="bt-blocker" placeholder="blocker (optional)" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Blueport.saveTask()">save task</button>
+              <button class="t-btn-ghost" onclick="Blueport.hideTaskForm()">cancel</button>
+            </div>
           </div>
         </section>
 
@@ -478,6 +631,8 @@
   <script src="modules/dashboard.js"></script>
   <script src="modules/work.js"></script>
   <script src="modules/blem.js"></script>
+  <script src="modules/younity.js"></script>
+  <script src="modules/blueport.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

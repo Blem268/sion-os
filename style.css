@@ -762,3 +762,191 @@ html, body {
   .blem-table { font-size: 10px; }
   .blem-table th, .blem-table td { padding: 6px 7px; }
 }
+
+/* ============================================
+   SPRINT 4 — Younity + Blueport styles
+   ============================================ */
+
+/* ── Younity pipeline board ── */
+.y-pipeline {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.y-stage {
+  background: var(--bg1);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px;
+  min-width: 140px;
+}
+
+.y-stage-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.y-stage-name {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+
+.y-stage-count {
+  font-size: 10px;
+  color: var(--fg3);
+  background: var(--bg3);
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.stage-lead      { color: var(--fg3); }
+.stage-proposal  { color: var(--amber); }
+.stage-onboard   { color: var(--cyan); }
+.stage-active    { color: var(--green); }
+.stage-delivered { color: var(--purple); }
+.stage-retained  { color: var(--green); }
+.stage-lost      { color: var(--red); }
+
+.y-stage-cards { display: flex; flex-direction: column; gap: 6px; }
+
+.y-empty-stage { font-size: 10px; color: var(--fg3); text-align: center; padding: 8px 0; }
+
+.y-client-card {
+  background: var(--bg2);
+  border: 0.5px solid var(--border2);
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.y-card-overdue { border-color: #5a1020; background: var(--red-dim); }
+
+.y-card-name  { font-size: 11px; color: var(--fg);  font-weight: 500; margin-bottom: 2px; }
+.y-card-biz   { font-size: 9px;  color: var(--fg3); margin-bottom: 4px; }
+.y-card-value { font-size: 10px; margin-bottom: 4px; }
+
+.y-card-action {
+  font-size: 9px;
+  display: flex;
+  align-items: flex-start;
+  gap: 3px;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.y-card-action i { font-size: 9px; margin-top: 2px; flex-shrink: 0; }
+
+.y-card-date {
+  display: block;
+  font-size: 9px;
+  color: var(--fg3);
+  margin-top: 1px;
+}
+
+.y-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.y-stage-select {
+  flex: 1;
+  background: var(--bg);
+  border: 0.5px solid var(--border2);
+  border-radius: 3px;
+  padding: 3px 4px;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--fg2);
+  outline: none;
+  cursor: pointer;
+}
+
+/* ── Younity stage pills (table) ── */
+.y-stage-pill {
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.y-stage-pill.stage-lead      { background: var(--bg3);        color: var(--fg3);    border: 0.5px solid var(--border2); }
+.y-stage-pill.stage-proposal  { background: var(--amber-dim);  color: var(--amber);  border: 0.5px solid #5a3800; }
+.y-stage-pill.stage-onboard   { background: var(--cyan-dim);   color: var(--cyan);   border: 0.5px solid #005a6a; }
+.y-stage-pill.stage-active    { background: var(--green-dim);  color: var(--green);  border: 0.5px solid var(--green2); }
+.y-stage-pill.stage-delivered { background: var(--purple-dim); color: var(--purple); border: 0.5px solid #5a3a8a; }
+.y-stage-pill.stage-retained  { background: var(--green-dim);  color: var(--green);  border: 0.5px solid var(--green2); }
+.y-stage-pill.stage-lost      { background: var(--red-dim);    color: var(--red);    border: 0.5px solid #5a1020; }
+
+/* ── Blueport category blocks ── */
+.bp-category { display: flex; flex-direction: column; gap: 8px; }
+
+.bp-cat-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bp-cat-name {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  min-width: 90px;
+}
+
+.cat-legal { color: var(--red); }
+.cat-ops   { color: var(--amber); }
+.cat-mkt   { color: var(--cyan); }
+.cat-fin   { color: var(--green); }
+.cat-tech  { color: var(--purple); }
+
+.bp-cat-progress {
+  font-size: 9px;
+  color: var(--fg3);
+  min-width: 30px;
+}
+
+.bp-cat-bar {
+  flex: 1;
+  height: 2px;
+  background: var(--bg3);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.bp-cat-fill {
+  height: 2px;
+  border-radius: 1px;
+  background: var(--green);
+  transition: width 0.5s ease;
+}
+
+.bp-overdue { border-left: 2px solid var(--red); }
+
+.bp-overdue-badge {
+  background: var(--red-dim) !important;
+  color: var(--red) !important;
+  border-color: #5a1020 !important;
+}
+
+.bp-blocker {
+  font-size: 9px;
+  color: var(--amber);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.bp-blocker i { font-size: 9px; }
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .y-pipeline { grid-template-columns: repeat(3, 1fr); }
+}
