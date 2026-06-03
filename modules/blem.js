@@ -111,7 +111,10 @@ const Blem = (() => {
           <span class="blem-margin">${c.margin}%</span>
         </td>
         <td><span class="pill ${statusCls}">${j.status}</span></td>
-        <td>
+        <td style="white-space:nowrap">
+          <button class="task-del" onclick="Blem.editJob(${j.id})" title="Edit job" aria-label="Edit job">
+            <i class="ti ti-pencil" aria-hidden="true"></i>
+          </button>
           <button class="task-del" onclick="Blem.markPaid(${j.id})" title="Mark paid in full" aria-label="Mark paid">
             <i class="ti ti-coin" aria-hidden="true"></i>
           </button>
@@ -198,6 +201,34 @@ const Blem = (() => {
     clearJobForm();
   }
 
+  /* ── Edit existing job ── */
+  function editJob(id) {
+    const job = Store.getAll('blem_jobs').find(j => j.id === id);
+    if (!job) return;
+    clearJobForm();
+    const form = document.getElementById('blem-job-form');
+    if (!form) return;
+    form.dataset.editId = id;
+    // Populate fields
+    const set = (elId, val) => { const el = document.getElementById(elId); if (el) el.value = val || ''; };
+    set('bj-vehicle',        job.vehicle);
+    set('bj-type',           job.job_type);
+    set('bj-quote',          job.quote_xcd);
+    set('bj-parts',          job.parts_cost_xcd);
+    set('bj-paid',           job.amount_paid_xcd);
+    set('bj-payment-status', job.payment_status);
+    set('bj-status',         job.status);
+    set('bj-date-in',        job.date_in);
+    set('bj-client-name',    job.client_name);
+    set('bj-client-phone',   job.client_phone);
+    set('bj-notes',          job.notes);
+    // Update form title to show editing
+    const titleEl = form.querySelector('.form-title');
+    if (titleEl) titleEl.textContent = 'edit job — ' + job.job_ref;
+    form.classList.remove('hidden');
+    document.getElementById('bj-vehicle')?.focus();
+  }
+
   function clearJobForm() {
     ['bj-vehicle','bj-quote','bj-parts','bj-paid','bj-client-name','bj-client-phone','bj-notes','bj-date-in']
       .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
@@ -207,6 +238,12 @@ const Blem = (() => {
     if (ps) ps.value = 'Unpaid';
     if (st) st.value = 'In Progress';
     if (ty) ty.value = 'Wiring';
+    const form = document.getElementById('blem-job-form');
+    if (form) {
+      form.dataset.editId = '';
+      const titleEl = form.querySelector('.form-title');
+      if (titleEl) titleEl.textContent = 'log new job';
+    }
   }
 
   function saveJob() {
@@ -218,24 +255,31 @@ const Blem = (() => {
     const quote       = parseFloat(document.getElementById('bj-quote')?.value)   || 0;
     const parts       = parseFloat(document.getElementById('bj-parts')?.value)   || 0;
     const paid        = parseFloat(document.getElementById('bj-paid')?.value)    || 0;
+    const form        = document.getElementById('blem-job-form');
+    const editId      = form?.dataset.editId ? parseInt(form.dataset.editId) : null;
 
     upsertClient(clientName, clientPhone, vehicle);
 
-    Store.insert('blem_jobs', {
-      job_ref:          nextRef(),
-      vehicle:          vehicle,
-      job_type:         document.getElementById('bj-type')?.value           || 'Other',
-      quote_xcd:        quote,
-      parts_cost_xcd:   parts,
-      amount_paid_xcd:  paid,
-      payment_status:   document.getElementById('bj-payment-status')?.value || 'Unpaid',
-      status:           document.getElementById('bj-status')?.value         || 'In Progress',
-      date_in:          document.getElementById('bj-date-in')?.value        || null,
-      client_name:      clientName,
-      client_phone:     clientPhone,
-      notes:            document.getElementById('bj-notes')?.value          || '',
-      source:           'direct',
-    });
+    const jobData = {
+      vehicle,
+      job_type:        document.getElementById('bj-type')?.value           || 'Other',
+      quote_xcd:       quote,
+      parts_cost_xcd:  parts,
+      amount_paid_xcd: paid,
+      payment_status:  document.getElementById('bj-payment-status')?.value || 'Unpaid',
+      status:          document.getElementById('bj-status')?.value         || 'In Progress',
+      date_in:         document.getElementById('bj-date-in')?.value        || null,
+      client_name:     clientName,
+      client_phone:    clientPhone,
+      notes:           document.getElementById('bj-notes')?.value          || '',
+      source:          'direct',
+    };
+
+    if (editId) {
+      Store.update('blem_jobs', editId, jobData);
+    } else {
+      Store.insert('blem_jobs', { job_ref: nextRef(), ...jobData });
+    }
 
     hideJobForm();
     renderAll();
@@ -264,7 +308,7 @@ const Blem = (() => {
 
   return {
     init, renderAll,
-    showJobForm, hideJobForm, saveJob,
+    showJobForm, hideJobForm, saveJob, editJob,
     markPaid, deleteJob, updateRating,
   };
 
