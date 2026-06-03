@@ -1,70 +1,37 @@
 /* ============================================
    SION OS — app.js
-   v0.1.0 — Sprint 0
-   Navigation, clock, module routing.
+   v0.2.0 — Sprint 1
    ============================================ */
 
-/* ── Clock & date ── */
 function updateClock() {
-  const now = new Date();
-  const time = now.toLocaleTimeString('en-AG', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false
-  });
-  const date = now.toLocaleDateString('en-AG', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric'
-  });
-  const clockEl = document.getElementById('clock');
-  const dateEl  = document.getElementById('today-date');
-  if (clockEl) clockEl.textContent = time;
-  if (dateEl)  dateEl.textContent  = date;
+  const now  = new Date();
+  const time = now.toLocaleTimeString('en-AG', { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false });
+  const date = now.toLocaleDateString('en-AG', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+  const c = document.getElementById('clock');
+  const d = document.getElementById('today-date');
+  if (c) c.textContent = time;
+  if (d) d.textContent = date;
 }
 
 updateClock();
 setInterval(updateClock, 1000);
 
-/* ── Navigation ── */
 function navigate(moduleId, btn) {
-  // Hide all modules
-  document.querySelectorAll('.module').forEach(m => {
-    m.classList.remove('active');
-  });
-
-  // Deactivate all nav items
-  document.querySelectorAll('.nav-item').forEach(n => {
-    n.classList.remove('active');
-  });
-
-  // Show target module
+  document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const target = document.getElementById('mod-' + moduleId);
   if (target) target.classList.add('active');
-
-  // Activate nav button
   if (btn) btn.classList.add('active');
-
-  // Update page title
   const titles = {
-    dashboard: 'Sion OS — Dashboard',
-    work:      'Sion OS — Work',
-    blem:      'Sion OS — Blem Tuned',
-    younity:   'Sion OS — Younity',
-    blueport:  'Sion OS — Blueport',
-    finance:   'Sion OS — Finance',
-    study:     'Sion OS — Study',
-    gym:       'Sion OS — Gym'
+    dashboard: 'Sion OS — Dashboard', work: 'Sion OS — Work',
+    blem: 'Sion OS — Blem Tuned',    younity: 'Sion OS — Younity',
+    blueport: 'Sion OS — Blueport',  finance: 'Sion OS — Finance',
+    study: 'Sion OS — Study',        gym: 'Sion OS — Gym'
   };
   document.title = titles[moduleId] || 'Sion OS';
-
-  // Persist last active module
   Store.set('last_module', moduleId);
 }
 
-/* ── Restore last module on load ── */
 (function restoreModule() {
   const last = Store.get('last_module');
   if (last) {
@@ -73,12 +40,11 @@ function navigate(moduleId, btn) {
   }
 })();
 
-/* ── Keyboard shortcut: Cmd+K / Ctrl+K (quick nav placeholder) ── */
-document.addEventListener('keydown', (e) => {
+document.addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
     e.preventDefault();
-    // Sprint 1+: open quick-add prompt
-    console.log('[SionOS] Cmd+K — quick-add coming in Sprint 1');
+    const input = document.getElementById('dash-quick-add');
+    if (input) { navigate('dashboard', document.querySelector('[data-module="dashboard"]')); input.focus(); }
   }
 });
 

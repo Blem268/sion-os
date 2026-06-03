@@ -1,1 +1,1 @@
-/* study.js — coming in sprint plan — see README */
+/* study.js — coming sprint plan */

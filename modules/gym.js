@@ -1,1 +1,1 @@
-/* gym.js — coming in sprint plan — see README */
+/* gym.js — coming sprint plan */

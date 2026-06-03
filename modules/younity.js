@@ -1,1 +1,1 @@
-/* younity.js — coming in sprint plan — see README */
+/* younity.js — coming sprint plan */

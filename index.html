@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sion OS</title>
+  <title>Sion OS — Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
@@ -101,39 +101,32 @@
             <span class="cursor"></span>
           </div>
 
-          <!-- Boot messages -->
-          <div class="boot-msg" id="dash-boot">
+          <div class="boot-msg">
             <div class="boot-line"><span class="ok">[  OK  ]</span> Life OS v0.2.0 — Sprint 1 online</div>
             <div class="boot-line"><span class="ok">[  OK  ]</span> Dashboard + Milestones loaded</div>
             <div class="boot-line"><span class="ok">[  OK  ]</span> localStorage connected</div>
           </div>
 
-          <!-- Greeting -->
           <div class="dash-greeting">
             <span id="dash-greeting-text">Good morning</span>, <span class="green">Sion.</span>
           </div>
 
-          <!-- Metric cards row -->
-          <div class="metric-grid" id="dash-metrics">
-            <!-- D-Max -->
+          <div class="metric-grid">
             <div class="metric-card amber-accent">
               <div class="mc-label">d-max arrives</div>
               <div class="mc-val amber" id="dmax-days">—</div>
               <div class="mc-sub" id="dmax-sub">calculating...</div>
             </div>
-            <!-- Debt service -->
             <div class="metric-card red-accent">
-              <div class="mc-label">monthly debt / mo</div>
+              <div class="mc-label">debt service / mo</div>
               <div class="mc-val red">$3,415</div>
               <div class="mc-sub">XCD · from aug 2026</div>
             </div>
-            <!-- Blueport -->
             <div class="metric-card cyan-accent">
               <div class="mc-label">blueport launch</div>
               <div class="mc-val cyan">sep '26</div>
               <div class="mc-sub" id="blueport-days-sub">calculating...</div>
             </div>
-            <!-- Weight -->
             <div class="metric-card green-accent">
               <div class="mc-label">weight</div>
               <div class="mc-val white">137 <span style="font-size:12px;color:var(--fg3);">/ 160 lb</span></div>
@@ -141,7 +134,6 @@
             </div>
           </div>
 
-          <!-- Progress bars -->
           <div class="dash-section-label">progress</div>
           <div class="progress-block">
             <div class="prog-row">
@@ -161,25 +153,15 @@
             </div>
           </div>
 
-          <!-- Task queue -->
           <div class="dash-section-label">
             task queue
             <span class="section-label-sub" id="dash-task-count"></span>
           </div>
-          <div class="task-list" id="dash-task-list">
-            <!-- Populated by dashboard.js -->
-          </div>
-          <!-- Quick add task -->
+          <div class="task-list" id="dash-task-list"></div>
           <div class="quick-add-row">
             <span class="qa-prompt">+</span>
-            <input
-              class="qa-input"
-              id="dash-quick-add"
-              type="text"
-              placeholder="quick add task..."
-              autocomplete="off"
-              onkeydown="if(event.key==='Enter') Dashboard.quickAddTask()"
-            />
+            <input class="qa-input" id="dash-quick-add" type="text" placeholder="quick add task..." autocomplete="off"
+              onkeydown="if(event.key==='Enter') Dashboard.quickAddTask()" />
             <select class="qa-select" id="dash-quick-badge">
               <option value="work">work</option>
               <option value="biz">biz</option>
@@ -190,16 +172,12 @@
             <button class="qa-btn" onclick="Dashboard.quickAddTask()">add</button>
           </div>
 
-          <!-- Milestones -->
           <div class="dash-section-label">
             milestones
             <button class="section-btn" onclick="Dashboard.showAddMilestone()">+ add</button>
           </div>
-          <div class="milestone-list" id="milestone-list">
-            <!-- Populated by dashboard.js -->
-          </div>
+          <div class="milestone-list" id="milestone-list"></div>
 
-          <!-- Add milestone form (hidden by default) -->
           <div class="form-panel hidden" id="milestone-form">
             <div class="form-title">new milestone</div>
             <div class="form-row">
@@ -207,16 +185,15 @@
               <input class="t-input" id="ms-date" type="date" />
             </div>
             <div class="form-row">
-              <input class="t-input" id="ms-target" type="number" placeholder="target value (optional)" />
+              <input class="t-input" id="ms-target"  type="number" placeholder="target value (optional)" />
               <input class="t-input" id="ms-current" type="number" placeholder="current value (optional)" />
-              <input class="t-input" id="ms-unit" placeholder="unit (lbs / XCD / %)" />
+              <input class="t-input" id="ms-unit" placeholder="unit  e.g. lbs / XCD / %" />
             </div>
             <div class="form-actions">
               <button class="t-btn" onclick="Dashboard.saveMilestone()">save milestone</button>
               <button class="t-btn-ghost" onclick="Dashboard.hideMilestoneForm()">cancel</button>
             </div>
           </div>
-
         </section>
 
         <!-- WORK -->

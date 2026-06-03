@@ -1,1 +1,1 @@
-/* blem.js — coming in sprint plan — see README */
+/* blem.js — coming sprint plan */

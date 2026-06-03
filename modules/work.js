@@ -1,1 +1,1 @@
-/* work.js — coming in sprint plan — see README */
+/* work.js — coming sprint plan */

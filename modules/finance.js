@@ -1,1 +1,1 @@
-/* finance.js — coming in sprint plan — see README */
+/* finance.js — coming sprint plan */

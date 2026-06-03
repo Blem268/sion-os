@@ -1,1 +1,1 @@
-/* blueport.js — coming in sprint plan — see README */
+/* blueport.js — coming sprint plan */
