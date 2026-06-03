@@ -3,31 +3,69 @@
    v0.2.0 — Sprint 1
    ============================================ */
 
+/* ── Dark theme (default) ── */
 :root {
   --bg:        #080808;
-  --bg1:       #0f0f0f;
-  --bg2:       #141414;
-  --bg3:       #1a1a1a;
-  --border:    #1e1e1e;
-  --border2:   #2a2a2a;
-  --fg:        #c8c8c8;
-  --fg2:       #666;
-  --fg3:       #333;
+  --bg1:       #111111;
+  --bg2:       #181818;
+  --bg3:       #222222;
+  --border:    #2a2a2a;
+  --border2:   #333333;
+  --fg:        #e8e8e8;
+  --fg2:       #999999;
+  --fg3:       #555555;
   --green:     #00ff88;
   --green2:    #00cc6a;
   --green-dim: #0a2a1a;
-  --amber:     #ffb830;
+  --amber:     #ffc040;
   --amber-dim: #2a1e00;
-  --red:       #ff4455;
+  --red:       #ff5566;
   --red-dim:   #2a0a0f;
   --cyan:      #00d4ff;
   --cyan-dim:  #001e2a;
-  --purple:    #b388ff;
+  --purple:    #c4a0ff;
   --purple-dim:#1a0a2a;
-  --white:     #eeeeee;
+  --white:     #ffffff;
   --mono: 'JetBrains Mono', 'Courier New', monospace;
   --radius: 6px;
 }
+
+/* ── Light theme ── */
+:root.light {
+  --bg:        #f5f5f5;
+  --bg1:       #ffffff;
+  --bg2:       #eeeeee;
+  --bg3:       #e4e4e4;
+  --border:    #d0d0d0;
+  --border2:   #bbbbbb;
+  --fg:        #111111;
+  --fg2:       #444444;
+  --fg3:       #888888;
+  --green:     #007a3d;
+  --green2:    #006633;
+  --green-dim: #d4f5e4;
+  --amber:     #b35a00;
+  --amber-dim: #fff0d4;
+  --red:       #cc1122;
+  --red-dim:   #ffe4e6;
+  --cyan:      #005f80;
+  --cyan-dim:  #d4f0fa;
+  --purple:    #6a3aaa;
+  --purple-dim:#ede4fa;
+  --white:     #111111;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --radius: 6px;
+}
+
+/* ── Light mode overrides ── */
+:root.light html,
+:root.light body {
+  background: #f5f5f5;
+}
+
+:root.light .dot-red   { background: #ff5f57; }
+:root.light .dot-amber { background: #febc2e; }
+:root.light .dot-green { background: #28c840; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1100,3 +1138,86 @@ html, body {
   .gym-weight-big { font-size: 32px; }
   .study-skills-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* ============================================
+   THEME TOGGLE
+   ============================================ */
+
+.theme-toggle {
+  background: none;
+  border: 0.5px solid var(--border2);
+  border-radius: 4px;
+  padding: 3px 7px;
+  font-size: 13px;
+  color: var(--fg3);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.15s, border-color 0.15s;
+  font-family: var(--mono);
+}
+
+.theme-toggle:hover {
+  color: var(--fg);
+  border-color: var(--fg3);
+}
+
+/* Light mode — adjust metric card accents for readability */
+:root.light .metric-card.amber-accent {
+  border-color: #cc7700;
+  background: #fff3d4;
+}
+:root.light .metric-card.red-accent {
+  border-color: #cc1122;
+  background: #ffe8ea;
+}
+:root.light .metric-card.cyan-accent {
+  border-color: #005f80;
+  background: #d4f0fa;
+}
+:root.light .metric-card.green-accent {
+  border-color: #007a3d;
+  background: #d4f5e4;
+}
+:root.light .rhythm-card.rhythm-done    { border-color: #007a3d; background: #d4f5e4; }
+:root.light .rhythm-card.rhythm-partial { border-color: #b35a00; background: #fff0d4; }
+:root.light .task-check.checked         { background: #d4f5e4; border-color: #007a3d; }
+:root.light .nav-item.active            { background: #d4f5e4; border-left-color: #007a3d; }
+:root.light .work-tab.active            { background: #d4f0fa; border-color: #005f80; }
+:root.light .sidebar-logo               { color: #007a3d; }
+:root.light .p-user                     { color: #007a3d; }
+:root.light .p-path                     { color: #005f80; }
+:root.light .cursor                     { background: #007a3d; }
+:root.light .ok                         { color: #007a3d; }
+:root.light .warn                       { color: #b35a00; }
+:root.light .qa-btn                     { background: #d4f5e4; border-color: #007a3d; color: #007a3d; }
+:root.light .qa-btn:hover               { background: #007a3d; color: #ffffff; }
+:root.light .t-btn                      { background: #d4f5e4; border-color: #007a3d; color: #007a3d; }
+:root.light .t-btn:hover                { background: #007a3d; color: #ffffff; }
+:root.light .section-btn:hover          { color: #007a3d; border-color: #007a3d; }
+:root.light .fin-highlight-row td       { color: #007a3d; }
+:root.light .fin-highlight-row:hover td { background: #d4f5e4; }
+:root.light .bp-cat-fill                { background: #007a3d; }
+
+/* Light mode — pill colours */
+:root.light .pill-green  { background: #d4f5e4; color: #005a2a; border-color: #007a3d; }
+:root.light .pill-amber  { background: #fff0d4; color: #7a3a00; border-color: #b35a00; }
+:root.light .pill-red    { background: #ffe8ea; color: #7a0010; border-color: #cc1122; }
+:root.light .pill-cyan   { background: #d4f0fa; color: #003a50; border-color: #005f80; }
+:root.light .badge-work     { background: #d4f0fa; color: #003a50; border-color: #005f80; }
+:root.light .badge-biz      { background: #d4f5e4; color: #005a2a; border-color: #007a3d; }
+:root.light .badge-blueport { background: #d4f0fa; color: #003a50; border-color: #005f80; }
+:root.light .badge-study    { background: #ede4fa; color: #3a1a7a; border-color: #6a3aaa; }
+:root.light .badge-gym      { background: #fff0d4; color: #7a3a00; border-color: #b35a00; }
+
+/* Light mode — Younity stage pills */
+:root.light .y-stage-pill.stage-proposal  { background: #fff0d4; color: #7a3a00; border-color: #b35a00; }
+:root.light .y-stage-pill.stage-onboard   { background: #d4f0fa; color: #003a50; border-color: #005f80; }
+:root.light .y-stage-pill.stage-active    { background: #d4f5e4; color: #005a2a; border-color: #007a3d; }
+:root.light .y-stage-pill.stage-delivered { background: #ede4fa; color: #3a1a7a; border-color: #6a3aaa; }
+:root.light .y-stage-pill.stage-retained  { background: #d4f5e4; color: #005a2a; border-color: #007a3d; }
+:root.light .y-stage-pill.stage-lost      { background: #ffe8ea; color: #7a0010; border-color: #cc1122; }
+
+/* Light mode — scrollbar */
+:root.light ::-webkit-scrollbar-track { background: #eeeeee; }
+:root.light ::-webkit-scrollbar-thumb { background: #cccccc; }

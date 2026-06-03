@@ -40,6 +40,39 @@ function navigate(moduleId, btn) {
   }
 })();
 
+/* ── App namespace ── */
+const App = (() => {
+
+  function applyTheme(theme) {
+    const root    = document.documentElement;
+    const icon    = document.getElementById('theme-icon');
+    if (theme === 'light') {
+      root.classList.add('light');
+      if (icon) { icon.classList.remove('ti-sun'); icon.classList.add('ti-moon'); }
+    } else {
+      root.classList.remove('light');
+      if (icon) { icon.classList.remove('ti-moon'); icon.classList.add('ti-sun'); }
+    }
+  }
+
+  function toggleTheme() {
+    const current = Store.get('theme') || 'dark';
+    const next    = current === 'dark' ? 'light' : 'dark';
+    Store.set('theme', next);
+    applyTheme(next);
+  }
+
+  function init() {
+    const saved = Store.get('theme') || 'dark';
+    applyTheme(saved);
+  }
+
+  return { toggleTheme, init };
+
+})();
+
+App.init();
+
 document.addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
     e.preventDefault();

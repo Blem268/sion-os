@@ -7,7 +7,7 @@
 
 const Finance = (() => {
 
-  const DMAX_MONTHLY = 2414.83;
+  const DMAX_MONTHLY = 3414.83;
 
   const AMORT_MILESTONES = [
     { label: 'First payment',   date: 'Aug 2026',   balance: 158185  },
