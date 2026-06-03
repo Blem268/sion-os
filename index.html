@@ -85,7 +85,7 @@
         </div>
 
         <div class="sidebar-footer">
-          <span>v0.3.0-sprint2</span><br/>
+          <span>v0.4.0-sprint3</span><br/>
           <span>antigua 🇦🇬</span>
         </div>
       </nav>
@@ -288,10 +288,126 @@
             <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
             <span class="p-cmd"> load blem-tuned --db=jobs</span>
           </div>
-          <div class="coming-soon">
-            <i class="ti ti-car" aria-hidden="true"></i>
-            Blem Tuned module — Sprint 3 — 30 June 2026
+
+          <!-- Metrics -->
+          <div class="metric-grid">
+            <div class="metric-card green-accent">
+              <div class="mc-label">active jobs</div>
+              <div class="mc-val green" id="blem-active">0</div>
+              <div class="mc-sub">in progress</div>
+            </div>
+            <div class="metric-card amber-accent">
+              <div class="mc-label">revenue this month</div>
+              <div class="mc-val amber" id="blem-revenue">$0</div>
+              <div class="mc-sub">XCD collected</div>
+            </div>
+            <div class="metric-card red-accent">
+              <div class="mc-label">outstanding</div>
+              <div class="mc-val red" id="blem-owed">$0</div>
+              <div class="mc-sub">XCD balance due</div>
+            </div>
+            <div class="metric-card">
+              <div class="mc-label">profit this month</div>
+              <div class="mc-val white" id="blem-profit">$0</div>
+              <div class="mc-sub">XCD gross profit</div>
+            </div>
           </div>
+
+          <!-- Jobs table -->
+          <div class="dash-section-label">
+            job log
+            <span class="section-label-sub" id="blem-job-count"></span>
+            <button class="section-btn" onclick="Blem.showJobForm()">+ log job</button>
+          </div>
+          <div class="blem-table-wrap">
+            <table class="blem-table">
+              <thead>
+                <tr>
+                  <th>ref</th>
+                  <th>vehicle / job</th>
+                  <th>type</th>
+                  <th>quote (xcd)</th>
+                  <th>paid (xcd)</th>
+                  <th>balance</th>
+                  <th>profit</th>
+                  <th>status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="blem-job-tbody">
+                <tr><td colspan="9" class="blem-empty">no jobs logged yet — add one below</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Add job form -->
+          <div class="form-panel hidden" id="blem-job-form">
+            <div class="form-title">log new job</div>
+            <div class="form-row">
+              <input class="t-input" id="bj-vehicle"  placeholder="vehicle / job description" style="flex:2" />
+              <select class="t-input" id="bj-type" style="flex:0 0 140px">
+                <option value="Wiring">Wiring</option>
+                <option value="Alarm/Security">Alarm/Security</option>
+                <option value="Lighting">Lighting</option>
+                <option value="Stereo/Audio">Stereo/Audio</option>
+                <option value="Diagnostics">Diagnostics</option>
+                <option value="Accessories">Accessories</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="bj-quote"  type="number" placeholder="quote (XCD)" />
+              <input class="t-input" id="bj-parts"  type="number" placeholder="parts cost (XCD)" />
+              <input class="t-input" id="bj-paid"   type="number" placeholder="amount paid (XCD)" />
+            </div>
+            <div class="form-row">
+              <select class="t-input" id="bj-payment-status">
+                <option value="Unpaid">Unpaid</option>
+                <option value="Deposit Paid">Deposit Paid</option>
+                <option value="Paid in Full">Paid in Full</option>
+              </select>
+              <select class="t-input" id="bj-status">
+                <option value="In Progress">In Progress</option>
+                <option value="Awaiting Parts">Awaiting Parts</option>
+                <option value="Ready for Collection">Ready for Collection</option>
+                <option value="Complete">Complete</option>
+              </select>
+              <input class="t-input" id="bj-date-in"  type="date" title="Date in" />
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="bj-client-name"  placeholder="client name" />
+              <input class="t-input" id="bj-client-phone" placeholder="client phone" />
+              <input class="t-input" id="bj-notes"        placeholder="notes (optional)" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Blem.saveJob()">save job</button>
+              <button class="t-btn-ghost" onclick="Blem.hideJobForm()">cancel</button>
+            </div>
+          </div>
+
+          <!-- Clients section -->
+          <div class="dash-section-label">
+            clients
+            <span class="section-label-sub" id="blem-client-count"></span>
+          </div>
+          <div class="blem-table-wrap">
+            <table class="blem-table">
+              <thead>
+                <tr>
+                  <th>name</th>
+                  <th>phone</th>
+                  <th>vehicle</th>
+                  <th>total jobs</th>
+                  <th>total paid</th>
+                  <th>rating</th>
+                </tr>
+              </thead>
+              <tbody id="blem-client-tbody">
+                <tr><td colspan="6" class="blem-empty">clients appear automatically when you log a job</td></tr>
+              </tbody>
+            </table>
+          </div>
+
         </section>
 
         <!-- YOUNITY -->
@@ -361,6 +477,7 @@
   <script src="data/store.js"></script>
   <script src="modules/dashboard.js"></script>
   <script src="modules/work.js"></script>
+  <script src="modules/blem.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

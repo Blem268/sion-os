@@ -9,8 +9,8 @@
 | 0 | Shell + deploy | ✅ Done | 9–13 Jun 2026 |
 | 1 | Dashboard + Milestones | ✅ Done | 16–20 Jun 2026 |
 | 2 | Work | ✅ Done | 23–27 Jun 2026 |
-| 3 | Blem Tuned | 🔜 Next | 30 Jun–4 Jul 2026 |
-| 4 | Younity + Blueport | ⏳ | 7–11 Jul 2026 |
+| 3 | Blem Tuned | ✅ Done | 30 Jun–4 Jul 2026 |
+| 4 | Younity + Blueport | 🔜 Next | 7–11 Jul 2026 |
 | 5 | Finance | ⏳ | 14–18 Jul 2026 |
 | 6 | Study + Gym | ⏳ | 21–25 Jul 2026 |
 | 7 | Polish + Ship | ⏳ | 28 Jul–1 Aug 2026 |

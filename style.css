@@ -644,3 +644,121 @@ html, body {
   .work-header { flex-direction: column; align-items: flex-start; gap: 8px; }
   .work-tabs { flex-direction: column; }
 }
+
+/* ============================================
+   SPRINT 3 — Blem Tuned styles
+   ============================================ */
+
+/* ── Table wrapper ── */
+.blem-table-wrap {
+  overflow-x: auto;
+  background: var(--bg1);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.blem-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.blem-table th {
+  text-align: left;
+  font-weight: 400;
+  font-size: 9px;
+  color: var(--fg3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 8px 10px;
+  border-bottom: 0.5px solid var(--border);
+  white-space: nowrap;
+}
+
+.blem-table td {
+  padding: 8px 10px;
+  border-bottom: 0.5px solid var(--border);
+  vertical-align: middle;
+}
+
+.blem-table tr:last-child td { border-bottom: none; }
+
+.blem-table .blem-job-row:hover td { background: var(--bg2); }
+
+.blem-empty {
+  text-align: center;
+  color: var(--fg3);
+  padding: 18px !important;
+  font-size: 11px;
+}
+
+/* ── Cell styles ── */
+.blem-ref    { color: var(--fg3); font-size: 10px; white-space: nowrap; }
+.blem-vehicle { color: var(--fg); }
+.blem-client-sub { font-size: 9px; color: var(--fg3); margin-top: 2px; }
+
+.num { text-align: right; white-space: nowrap; }
+.fg2 { color: var(--fg2); }
+.white { color: var(--white); }
+
+/* ── Type badge ── */
+.blem-type-badge {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 2px;
+  background: var(--bg3);
+  color: var(--fg3);
+  border: 0.5px solid var(--border2);
+  white-space: nowrap;
+}
+
+/* ── Payment pill (inline) ── */
+.blem-pay-pill {
+  display: block;
+  font-size: 8px;
+  padding: 1px 5px;
+  border-radius: 2px;
+  margin-top: 3px;
+  white-space: nowrap;
+}
+
+/* ── Margin badge ── */
+.blem-margin {
+  display: inline-block;
+  font-size: 9px;
+  color: var(--fg3);
+  margin-left: 4px;
+}
+
+/* ── Pills ── */
+.pill {
+  display: inline-block;
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.pill-green { background: var(--green-dim);  color: var(--green);  border: 0.5px solid var(--green2); }
+.pill-amber { background: var(--amber-dim);  color: var(--amber);  border: 0.5px solid #5a3800; }
+.pill-red   { background: var(--red-dim);    color: var(--red);    border: 0.5px solid #5a1020; }
+.pill-cyan  { background: var(--cyan-dim);   color: var(--cyan);   border: 0.5px solid #005a6a; }
+.pill-gray  { background: var(--bg3);        color: var(--fg3);    border: 0.5px solid var(--border2); }
+
+/* ── Rating select ── */
+.blem-rating-select {
+  background: var(--bg);
+  border: 0.5px solid var(--border2);
+  border-radius: 3px;
+  padding: 3px 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--fg2);
+  outline: none;
+  cursor: pointer;
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .blem-table { font-size: 10px; }
+  .blem-table th, .blem-table td { padding: 6px 7px; }
+}
