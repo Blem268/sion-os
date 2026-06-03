@@ -112,5 +112,15 @@ document.addEventListener('keydown', e => {
   }
 });
 
-console.log('%c SION OS v1.0.0 ', 'background:#00ff88;color:#080808;font-weight:bold;font-family:monospace;padding:2px 8px;');
-console.log('%c v1.0.0 — All modules online. Ship it. ', 'color:#666;font-family:monospace;');
+console.log('%c SION OS v2.0.0 ', 'background:#00ff88;color:#080808;font-weight:bold;font-family:monospace;padding:2px 8px;');
+const _isElectron = typeof window !== 'undefined' && window.electronAPI?.isElectron;
+console.log('%c ' + (_isElectron ? 'Electron desktop app' : 'Web browser') + ' ', 'color:#666;font-family:monospace;');
+
+/* ── Electron-aware notifications ── */
+function osNotify(title, body) {
+  if (window.electronAPI?.notify) {
+    window.electronAPI.notify(title, body);
+  } else if ('Notification' in window && Notification.permission === 'granted') {
+    new Notification(title, { body });
+  }
+}

@@ -1338,3 +1338,31 @@ html, body {
   .dash-biz-row { grid-template-columns: 1fr 1fr; }
   .dash-biz-row .dash-biz-card:last-child { grid-column: 1 / -1; }
 }
+
+/* ============================================
+   ELECTRON — native Mac window adjustments
+   ============================================ */
+
+/* Hide fake traffic light dots — Electron provides real ones */
+.electron .tb-dots { display: none; }
+
+/* Drag region for titlebar (allows window drag) */
+.electron .titlebar {
+  -webkit-app-region: drag;
+  padding-left: 80px;   /* Space for real traffic lights */
+}
+
+/* Buttons inside titlebar must be no-drag */
+.electron .titlebar button,
+.electron .titlebar .theme-toggle {
+  -webkit-app-region: no-drag;
+}
+
+/* Slightly taller titlebar for Mac */
+.electron .os {
+  grid-template-rows: 40px 1fr;
+}
+
+.electron .titlebar {
+  height: 40px;
+}

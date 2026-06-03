@@ -1,0 +1,15 @@
+{
+  "name": "sion-os",
+  "version": "2.0.0",
+  "description": "Sion Life OS",
+  "author": "Sion Looby-Martinez",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev":   "electron . --dev"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0"
+  },
+  "dependencies": {}
+}

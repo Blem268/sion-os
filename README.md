@@ -35,3 +35,31 @@ All 8 modules live. Dashboard pulls real data from every module.
 Smart alerts. Light/dark theme. JSON data export. Cmd+K quick-add.
 
 **Phase 2 next:** Electron desktop app + SQLite local database.
+
+---
+
+## Phase 2 — Desktop app (v2.0.0)
+
+### Run as desktop app
+
+```bash
+cd ~/sion-os
+npm install
+npm start
+```
+
+### What Phase 2 adds
+- Native Mac window via Electron
+- System tray icon — always one click away
+- Minimise to tray instead of closing
+- Opens at Mac startup (hidden to tray)
+- Right-click tray menu: Dashboard, Blem Tuned, Finance, Export, Quit
+- Native Mac notifications for alerts
+
+### Phase 2 sprint plan
+| Sprint | Feature | Status |
+|--------|---------|--------|
+| 8 | Electron shell + tray + startup | 🔜 Building |
+| 9 | SQLite local database migration | ⏳ |
+| 10 | System tray polish + notifications | ⏳ |
+| 11 | Package as .app bundle | ⏳ |

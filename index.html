@@ -92,7 +92,7 @@
           <button class="export-btn" onclick="App.exportData()" title="Export all data as JSON backup">
             <i class="ti ti-download" aria-hidden="true"></i> export
           </button>
-          <span>v1.0.0</span><br/>
+          <span>v2.0.0</span><br/>
           <span>antigua 🇦🇬</span>
         </div>
       </nav>
@@ -1064,6 +1064,12 @@
     </div>
   </div>
 
+  <!-- Detect Electron and apply native chrome adjustments -->
+  <script>
+    if (typeof window !== "undefined" && window.electronAPI?.isElectron) {
+      document.documentElement.classList.add("electron");
+    }
+  </script>
   <script src="data/store.js"></script>
   <script src="modules/dashboard.js"></script>
   <script src="modules/work.js"></script>
