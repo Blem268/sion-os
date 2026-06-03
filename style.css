@@ -963,3 +963,140 @@ html, body {
 .fin-highlight-row:hover td {
   background: var(--green-dim);
 }
+
+/* ============================================
+   SPRINT 6 — Study + Gym styles
+   ============================================ */
+
+/* ── Study progress bar ── */
+.study-progress-bar {
+  height: 4px;
+  background: var(--bg3);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.study-prog-fill {
+  height: 4px;
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+
+/* ── Skills grid ── */
+.study-skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+.skill-card {
+  background: var(--bg1);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.skill-title    { font-size: 11px; color: var(--fg); font-weight: 500; }
+.skill-meta     { display: flex; gap: 5px; flex-wrap: wrap; }
+.skill-concepts { font-size: 10px; color: var(--fg3); line-height: 1.5; }
+
+/* ── Gym hero ── */
+.gym-hero {
+  background: var(--bg1);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.gym-weight-big {
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--fg);
+  line-height: 1;
+  font-family: var(--mono);
+}
+
+.gym-weight-label {
+  font-size: 10px;
+  color: var(--fg3);
+  margin-top: 4px;
+}
+
+.gym-arrow {
+  font-size: 24px;
+  color: var(--fg3);
+}
+
+.gym-stats {
+  margin-left: auto;
+  display: flex;
+  gap: 20px;
+}
+
+.gym-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.gym-stat-val {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--mono);
+}
+
+.gym-stat-label {
+  font-size: 9px;
+  color: var(--fg3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── Calorie bar ── */
+.gym-calorie-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg1);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+}
+
+.gym-calorie-bar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--bg3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.gym-calorie-bar-fill {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--amber);
+  transition: width 0.5s ease, background 0.3s ease;
+}
+
+.gym-calorie-target {
+  font-size: 10px;
+  color: var(--fg3);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .gym-hero       { flex-wrap: wrap; gap: 12px; }
+  .gym-stats      { margin-left: 0; }
+  .gym-weight-big { font-size: 32px; }
+  .study-skills-grid { grid-template-columns: 1fr 1fr; }
+}

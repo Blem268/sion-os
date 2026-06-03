@@ -85,7 +85,7 @@
         </div>
 
         <div class="sidebar-footer">
-          <span>v0.6.0-sprint5</span><br/>
+          <span>v0.7.0-sprint6</span><br/>
           <span>antigua 🇦🇬</span>
         </div>
       </nav>
@@ -768,10 +768,131 @@
             <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
             <span class="p-cmd"> load study --tracks=3</span>
           </div>
-          <div class="coming-soon">
-            <i class="ti ti-book" aria-hidden="true"></i>
-            Study module — Sprint 6 — 21 July 2026
+
+          <!-- Study metrics -->
+          <div class="metric-grid">
+            <div class="metric-card cyan-accent">
+              <div class="mc-label">google pm</div>
+              <div class="mc-val cyan" id="st-gpm-pct">0%</div>
+              <div class="mc-sub" id="st-gpm-sub">0 lessons</div>
+            </div>
+            <div class="metric-card green-accent">
+              <div class="mc-label">acca foa</div>
+              <div class="mc-val green" id="st-acca-pct">0%</div>
+              <div class="mc-sub" id="st-acca-sub">0 chapters</div>
+            </div>
+            <div class="metric-card" style="border-color:#5a3a8a;background:var(--purple-dim)">
+              <div class="mc-label">trw ai campus</div>
+              <div class="mc-val purple" id="st-trw-pct">0%</div>
+              <div class="mc-sub" id="st-trw-sub">0 lessons</div>
+            </div>
+            <div class="metric-card amber-accent">
+              <div class="mc-label">study roi</div>
+              <div class="mc-val amber" id="st-roi">0%</div>
+              <div class="mc-sub">lessons tagged to biz</div>
+            </div>
           </div>
+
+          <!-- Google PM -->
+          <div class="dash-section-label">
+            google pm foundations
+            <button class="section-btn" onclick="Study.showLessonForm('gpm')">+ add lesson</button>
+          </div>
+          <div class="study-progress-bar">
+            <div class="study-prog-fill cyan-fill" id="st-gpm-bar" style="width:0%"></div>
+          </div>
+          <div class="task-list" id="st-gpm-list"></div>
+          <div class="form-panel hidden" id="st-gpm-form">
+            <div class="form-title">add lesson — google pm foundations</div>
+            <div class="form-row">
+              <input class="t-input" id="sl-gpm-title" placeholder="lesson / module title" style="flex:2" />
+              <select class="t-input" id="sl-gpm-apply" style="flex:0 0 160px">
+                <option value="Blem Tuned">Blem Tuned</option>
+                <option value="Younity">Younity</option>
+                <option value="Blueport">Blueport</option>
+                <option value="All">All businesses</option>
+                <option value="Personal">Personal</option>
+                <option value="N/A">N/A</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="sl-gpm-concepts" placeholder="key concepts (optional)" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Study.saveLesson('gpm')">save lesson</button>
+              <button class="t-btn-ghost" onclick="Study.hideLessonForm('gpm')">cancel</button>
+            </div>
+          </div>
+
+          <!-- ACCA FOA -->
+          <div class="dash-section-label">
+            acca foa
+            <button class="section-btn" onclick="Study.showLessonForm('acca')">+ add chapter</button>
+          </div>
+          <div class="study-progress-bar">
+            <div class="study-prog-fill green-fill" id="st-acca-bar" style="width:0%"></div>
+          </div>
+          <div class="task-list" id="st-acca-list"></div>
+          <div class="form-panel hidden" id="st-acca-form">
+            <div class="form-title">add chapter — acca foa</div>
+            <div class="form-row">
+              <input class="t-input" id="sl-acca-title" placeholder="chapter / topic title" style="flex:2" />
+              <select class="t-input" id="sl-acca-apply" style="flex:0 0 160px">
+                <option value="Blem Tuned">Blem Tuned</option>
+                <option value="Younity">Younity</option>
+                <option value="Blueport">Blueport</option>
+                <option value="All">All businesses</option>
+                <option value="Personal">Personal</option>
+                <option value="N/A">N/A</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="sl-acca-concepts" placeholder="key concepts (optional)" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Study.saveLesson('acca')">save chapter</button>
+              <button class="t-btn-ghost" onclick="Study.hideLessonForm('acca')">cancel</button>
+            </div>
+          </div>
+
+          <!-- TRW AI Campus -->
+          <div class="dash-section-label">
+            trw ai campus
+            <button class="section-btn" onclick="Study.showLessonForm('trw')">+ add lesson</button>
+          </div>
+          <div class="study-progress-bar">
+            <div class="study-prog-fill" id="st-trw-bar" style="width:0%;background:var(--purple)"></div>
+          </div>
+          <div class="task-list" id="st-trw-list"></div>
+          <div class="form-panel hidden" id="st-trw-form">
+            <div class="form-title">add lesson — trw ai campus</div>
+            <div class="form-row">
+              <input class="t-input" id="sl-trw-title" placeholder="lesson title" style="flex:2" />
+              <select class="t-input" id="sl-trw-apply" style="flex:0 0 160px">
+                <option value="Younity">Younity</option>
+                <option value="Blem Tuned">Blem Tuned</option>
+                <option value="Blueport">Blueport</option>
+                <option value="All">All businesses</option>
+                <option value="Personal">Personal</option>
+                <option value="N/A">N/A</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="sl-trw-concepts" placeholder="key concepts (optional)" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Study.saveLesson('trw')">save lesson</button>
+              <button class="t-btn-ghost" onclick="Study.hideLessonForm('trw')">cancel</button>
+            </div>
+          </div>
+
+          <!-- Skills index -->
+          <div class="dash-section-label">
+            skills index
+            <span class="section-label-sub" id="st-skills-count"></span>
+          </div>
+          <div class="study-skills-grid" id="st-skills-grid"></div>
+
         </section>
 
         <!-- GYM -->
@@ -780,10 +901,133 @@
             <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
             <span class="p-cmd"> load gym --goal=160lb</span>
           </div>
-          <div class="coming-soon">
-            <i class="ti ti-barbell" aria-hidden="true"></i>
-            Gym module — Sprint 6 — 21 July 2026
+
+          <!-- Weight hero -->
+          <div class="gym-hero">
+            <div>
+              <div class="gym-weight-big" id="gym-weight-display">137</div>
+              <div class="gym-weight-label">lbs current</div>
+            </div>
+            <div class="gym-arrow">&#8594;</div>
+            <div>
+              <div class="gym-weight-big green">160</div>
+              <div class="gym-weight-label">lbs target</div>
+            </div>
+            <div class="gym-stats">
+              <div class="gym-stat"><span class="gym-stat-val green" id="gym-pct">0%</span><span class="gym-stat-label">complete</span></div>
+              <div class="gym-stat"><span class="gym-stat-val amber" id="gym-remaining">23lb</span><span class="gym-stat-label">to go</span></div>
+              <div class="gym-stat"><span class="gym-stat-val cyan" id="gym-streak">0</span><span class="gym-stat-label">day streak</span></div>
+            </div>
           </div>
+          <div class="progress-block" style="margin-top:-8px">
+            <div class="prog-row">
+              <span class="prog-label">weight goal</span>
+              <div class="prog-track"><div class="prog-fill green-fill" id="gym-weight-bar" style="width:0%"></div></div>
+              <span class="prog-pct green" id="gym-weight-bar-pct">0%</span>
+            </div>
+          </div>
+
+          <!-- Log weight -->
+          <div class="dash-section-label">log weight</div>
+          <div class="quick-add-row">
+            <span class="qa-prompt">+</span>
+            <input class="qa-input" id="gym-weight-input" type="number" step="0.1" placeholder="weight in lbs..." style="max-width:200px"
+              onkeydown="if(event.key==='Enter') Gym.logWeight()" />
+            <input class="t-input" id="gym-weight-date" type="date" style="flex:0 0 150px" />
+            <button class="qa-btn" onclick="Gym.logWeight()">log</button>
+          </div>
+
+          <!-- Weight log table -->
+          <div class="blem-table-wrap">
+            <table class="blem-table">
+              <thead>
+                <tr><th>date</th><th>weight (lbs)</th><th>change</th><th>notes</th><th></th></tr>
+              </thead>
+              <tbody id="gym-weight-tbody">
+                <tr><td colspan="5" class="blem-empty">no weight entries yet — log your first one above</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Workout log -->
+          <div class="dash-section-label">
+            workout log
+            <span class="section-label-sub" id="gym-sessions-this-week"></span>
+            <button class="section-btn" onclick="Gym.showSessionForm()">+ log session</button>
+          </div>
+          <div class="task-list" id="gym-session-list"></div>
+          <div class="form-panel hidden" id="gym-session-form">
+            <div class="form-title">log workout session</div>
+            <div class="form-row">
+              <input class="t-input" id="gs-name" placeholder="session description (e.g. Upper push — chest, shoulders)" style="flex:2" />
+              <select class="t-input" id="gs-type" style="flex:0 0 140px">
+                <option value="Upper Push">Upper Push</option>
+                <option value="Upper Pull">Upper Pull</option>
+                <option value="Lower">Lower</option>
+                <option value="Full Body">Full Body</option>
+                <option value="Cardio">Cardio</option>
+                <option value="Rest">Rest</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="gs-date"  type="date" />
+              <input class="t-input" id="gs-mins"  type="number" placeholder="duration (mins)" />
+              <select class="t-input" id="gs-energy">
+                <option value="5">5 — Beast mode</option>
+                <option value="4">4 — Good</option>
+                <option value="3" selected>3 — OK</option>
+                <option value="2">2 — Low</option>
+                <option value="1">1 — Bad</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="gs-exercises" placeholder="exercises (optional)" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Gym.saveSession()">save session</button>
+              <button class="t-btn-ghost" onclick="Gym.hideSessionForm()">cancel</button>
+            </div>
+          </div>
+
+          <!-- Food log -->
+          <div class="dash-section-label">
+            food log
+            <span class="section-label-sub" id="gym-calorie-today"></span>
+            <button class="section-btn" onclick="Gym.showFoodForm()">+ log meal</button>
+          </div>
+          <div class="gym-calorie-bar-wrap">
+            <div class="gym-calorie-bar-track">
+              <div class="gym-calorie-bar-fill" id="gym-cal-bar" style="width:0%"></div>
+            </div>
+            <span class="gym-calorie-target">2,500 kcal target</span>
+          </div>
+          <div class="task-list" id="gym-food-list"></div>
+          <div class="form-panel hidden" id="gym-food-form">
+            <div class="form-title">log meal</div>
+            <div class="form-row">
+              <input class="t-input" id="gf-meal"    placeholder="meal name" style="flex:2" />
+              <select class="t-input" id="gf-type" style="flex:0 0 130px">
+                <option value="Breakfast">Breakfast</option>
+                <option value="Lunch">Lunch</option>
+                <option value="Dinner">Dinner</option>
+                <option value="Snack">Snack</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="gf-cals"    type="number" placeholder="calories" />
+              <input class="t-input" id="gf-protein" type="number" placeholder="protein (g)" />
+              <input class="t-input" id="gf-carbs"   type="number" placeholder="carbs (g)" />
+              <input class="t-input" id="gf-fat"     type="number" placeholder="fat (g)" />
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="gf-date" type="date" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Gym.saveFood()">save meal</button>
+              <button class="t-btn-ghost" onclick="Gym.hideFoodForm()">cancel</button>
+            </div>
+          </div>
+
         </section>
 
       </main>
@@ -797,6 +1041,8 @@
   <script src="modules/younity.js"></script>
   <script src="modules/blueport.js"></script>
   <script src="modules/finance.js"></script>
+  <script src="modules/study.js"></script>
+  <script src="modules/gym.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
