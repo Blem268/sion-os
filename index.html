@@ -27,6 +27,11 @@
         &nbsp;·&nbsp;
         <span id="today-date"></span>
         &nbsp;&nbsp;
+        <button class="batman-btn" id="batman-btn" onclick="if(typeof App!=='undefined')App.toggleBatman()" title="Batman mode" aria-label="Toggle batman theme">
+          <svg viewBox="0 0 100 50" width="22" height="11" fill="currentColor" aria-hidden="true">
+            <path d="M50,10 C47,5 39,2 27,5 C17,7 7,15 10,24 C12,30 19,30 23,27 C26,24 27,20 30,17 C33,14 37,13 40,15 L40,27 C40,32 42,37 47,39 C48.5,40 49,40 50,40 C51,40 51.5,40 53,39 C58,37 60,32 60,27 L60,15 C63,13 67,14 70,17 C73,20 74,24 77,27 C81,30 88,30 90,24 C93,15 83,7 73,5 C61,2 53,5 50,10 Z"/>
+          </svg>
+        </button>
         <button class="theme-toggle" id="theme-toggle" onclick="if(typeof App!=='undefined')App.toggleTheme()" title="Toggle light/dark mode" aria-label="Toggle theme">
           <i class="ti ti-sun" id="theme-icon" aria-hidden="true"></i>
         </button>
@@ -38,7 +43,10 @@
 
       <!-- Sidebar -->
       <nav class="sidebar" aria-label="Module navigation">
-        <div class="sidebar-logo">SL</div>
+        <div class="sidebar-brand">
+          <div class="sidebar-logo">SL</div>
+          <div class="sidebar-brand-text">SION LIFE OS</div>
+        </div>
 
         <div class="nav-group">
           <div class="nav-label">main</div>
@@ -57,7 +65,7 @@
         </div>
 
         <div class="nav-group">
-          <div class="nav-label">biz</div>
+          <div class="nav-label">business</div>
           <button class="nav-item" data-module="blem" onclick="navigate('blem', this)">
             <i class="ti ti-car" aria-hidden="true"></i>
             <span>blem tuned</span>
@@ -86,17 +94,42 @@
             <i class="ti ti-barbell" aria-hidden="true"></i>
             <span>gym</span>
           </button>
+          <button class="nav-item" data-module="journal" onclick="navigate('journal', this)">
+            <i class="ti ti-notebook" aria-hidden="true"></i>
+            <span>journal</span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">tools</div>
+          <button class="nav-item" data-module="calendar" onclick="navigate('calendar', this)">
+            <i class="ti ti-calendar" aria-hidden="true"></i>
+            <span>calendar</span>
+          </button>
+          <button class="nav-item" data-module="email" onclick="navigate('email', this)">
+            <i class="ti ti-mail" aria-hidden="true"></i>
+            <span>email</span>
+            <span class="email-unread-badge" id="sidebar-unread-badge" style="display:none"></span>
+          </button>
+          <button class="nav-item" data-module="habits" onclick="navigate('habits', this)">
+            <i class="ti ti-flame" aria-hidden="true"></i>
+            <span>habits</span>
+          </button>
+          <button class="nav-item" data-module="goals" onclick="navigate('goals', this)">
+            <i class="ti ti-target" aria-hidden="true"></i>
+            <span>goals</span>
+          </button>
         </div>
 
         <div class="sidebar-footer">
           <button class="export-btn" onclick="App.exportData()" title="Export all data as JSON backup">
-            <i class="ti ti-download" aria-hidden="true"></i> export
+            <i class="ti ti-download" aria-hidden="true"></i> Export Data
           </button>
           <div class="store-status" id="store-status" title="Database status">
             <span class="store-dot" id="store-dot"></span>
             <span id="store-label">connecting...</span>
           </div>
-          <span>v2.2.0</span><br/>
+          <span>v2.9.2</span><br/>
           <span>antigua 🇦🇬</span>
         </div>
       </nav>
@@ -106,112 +139,158 @@
 
         <!-- DASHBOARD -->
         <section id="mod-dashboard" class="module active">
-          <div class="prompt-line">
-            <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
-            <span class="p-cmd"> load dashboard</span>
-            <span class="cursor"></span>
-          </div>
 
-          <div class="boot-msg">
-            <div class="boot-line"><span class="ok">[  OK  ]</span> Life OS v0.2.0 — Sprint 1 online</div>
-            <div class="boot-line"><span class="ok">[  OK  ]</span> Dashboard + Milestones loaded</div>
-            <div class="boot-line"><span class="ok">[  OK  ]</span> localStorage connected</div>
-          </div>
-
-          <div class="dash-greeting">
-            <span id="dash-greeting-text">Good morning</span>, <span class="green">Sion.</span>
-          </div>
-
-          <div class="metric-grid">
-            <div class="metric-card amber-accent">
-              <div class="mc-label">d-max arrives</div>
-              <div class="mc-val amber" id="dmax-days">—</div>
-              <div class="mc-sub" id="dmax-sub">calculating...</div>
+          <!-- Header -->
+          <div class="dash-header">
+            <div>
+              <div class="dash-greeting">
+                <span id="dash-greeting-text">Good morning</span>, <span class="green">Sion.</span>
+              </div>
+              <div class="dash-subtitle">Focus on what moves the needle today.</div>
             </div>
-            <div class="metric-card cyan-accent">
-              <div class="mc-label">blueport launch</div>
-              <div class="mc-val cyan">sep '26</div>
-              <div class="mc-sub" id="blueport-days-sub">calculating...</div>
-            </div>
-            <div class="metric-card green-accent">
-              <div class="mc-label">weight</div>
-              <div class="mc-val white" id="dash-weight-val">137</div>
-              <div class="mc-sub" id="dash-weight-sub">23 lb to go</div>
-            </div>
-            <div class="metric-card" id="fin-coverage-dash">
-              <div class="mc-label">d-max coverage</div>
-              <div class="mc-val amber" id="dash-coverage-val">0%</div>
-              <div class="mc-sub" id="dash-coverage-sub">of payment covered</div>
+            <div class="dash-header-actions">
+              <button class="dash-hdr-btn dash-hdr-primary" onclick="Dashboard.showTaskForm()">
+                Quick Add <span style="font-size:15px;line-height:1">+</span>
+              </button>
+              <button class="dash-hdr-btn dash-hdr-cmd" title="Cmd+K">⌘K</button>
             </div>
           </div>
 
-          <!-- Live biz pulse -->
-          <div class="dash-biz-row">
-            <div class="dash-biz-card">
-              <div class="dash-biz-label"><i class="ti ti-car" aria-hidden="true"></i> blem tuned</div>
-              <div class="dash-biz-val amber" id="dash-blem-val">$0</div>
-              <div class="dash-biz-sub" id="dash-blem-sub">this month</div>
-            </div>
-            <div class="dash-biz-card">
-              <div class="dash-biz-label"><i class="ti ti-users" aria-hidden="true"></i> younity gap</div>
-              <div class="dash-biz-val red" id="dash-younity-val">$2,000</div>
-              <div class="dash-biz-sub" id="dash-younity-sub">to $2K target</div>
-            </div>
-            <div class="dash-biz-card">
-              <div class="dash-biz-label"><i class="ti ti-ship" aria-hidden="true"></i> blueport</div>
-              <div class="dash-biz-val cyan">7%</div>
-              <div class="dash-biz-sub">launch progress</div>
-            </div>
-          </div>
+          <!-- Metric cards -->
+          <div class="metric-grid" id="dash-metrics"></div>
 
           <!-- Alerts -->
-          <div class="dash-section-label">system alerts</div>
-          <div id="dash-alerts"></div>
+          <div class="dash-section-row">
+            <span class="dash-section-title">SYSTEM ALERTS</span>
+          </div>
+          <div id="dash-alerts" class="dash-alerts-grid"></div>
 
-          <div class="dash-section-label">progress</div>
-          <div class="progress-block">
-            <div class="prog-row">
-              <span class="prog-label">weight goal</span>
-              <div class="prog-track"><div class="prog-fill green-fill" id="pb-weight" style="width:0%"></div></div>
-              <span class="prog-pct green" id="pb-weight-pct">0%</span>
+          <!-- Task queue -->
+          <div class="dash-section-row" style="margin-top:8px">
+            <span class="dash-section-title">TODAY COMMAND QUEUE</span>
+            <button class="dash-hdr-btn dash-hdr-primary" onclick="Dashboard.showTaskForm()">+ Add Task</button>
+          </div>
+          <div class="form-panel hidden" id="dash-task-form" style="padding:10px 14px">
+            <div class="form-title">add task</div>
+            <div class="form-row">
+              <input class="t-input" id="dtf-title" placeholder="task title" style="flex:2" />
+              <select class="t-input" id="dtf-badge" style="flex:0 0 130px">
+                <option value="work">Work</option>
+                <option value="blem">Blem Tuned</option>
+                <option value="younity">Younity</option>
+                <option value="blueport">Blueport</option>
+                <option value="study">Study</option>
+                <option value="gym">Gym</option>
+              </select>
+              <input class="t-input" id="dtf-due" type="date" style="flex:0 0 150px" />
+              <select class="t-input" id="dtf-priority" style="flex:0 0 110px">
+                <option value="high">High</option>
+                <option value="med" selected>Medium</option>
+                <option value="low">Low</option>
+              </select>
             </div>
-            <div class="prog-row">
-              <span class="prog-label">blueport tasks</span>
-              <div class="prog-track"><div class="prog-fill cyan-fill" id="pb-blueport" style="width:7%"></div></div>
-              <span class="prog-pct cyan" id="pb-blueport-pct">7%</span>
-            </div>
-            <div class="prog-row">
-              <span class="prog-label">younity $2K</span>
-              <div class="prog-track"><div class="prog-fill green-fill" id="pb-younity" style="width:0%"></div></div>
-              <span class="prog-pct green" id="pb-younity-pct">0%</span>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Dashboard.saveTaskFromForm()">save</button>
+              <button class="t-btn-ghost" onclick="Dashboard.hideTaskForm()">cancel</button>
             </div>
           </div>
-
-          <div class="dash-section-label">
-            task queue
-            <span class="section-label-sub" id="dash-task-count"></span>
+          <div class="dash-task-tabs-wrap">
+            <div class="dash-task-tabs" id="dash-task-tabs"></div>
+            <span class="section-label-sub" id="dash-task-count" style="margin-left:auto;padding-right:4px"></span>
           </div>
-          <div class="task-list" id="dash-task-list"></div>
-          <div class="quick-add-row">
+          <div id="dash-task-list"></div>
+          <div class="quick-add-row" id="dash-quick-add-row">
             <span class="qa-prompt">+</span>
-            <input class="qa-input" id="dash-quick-add" type="text" placeholder="quick add task..." autocomplete="off"
+            <input class="qa-input" id="dash-quick-add" type="text" placeholder="Quick add task..." autocomplete="off"
               onkeydown="if(event.key==='Enter') Dashboard.quickAddTask()" />
             <select class="qa-select" id="dash-quick-badge">
-              <option value="work">work</option>
-              <option value="biz">biz</option>
-              <option value="blueport">blueport</option>
-              <option value="study">study</option>
-              <option value="gym">gym</option>
+              <option value="work">Work</option>
+              <option value="blem">Blem Tuned</option>
+              <option value="younity">Younity</option>
+              <option value="blueport">Blueport</option>
+              <option value="study">Study</option>
+              <option value="gym">Gym</option>
             </select>
-            <button class="qa-btn" onclick="Dashboard.quickAddTask()">add</button>
+            <button class="qa-btn" onclick="Dashboard.quickAddTask()">Add</button>
           </div>
 
-          <div class="dash-section-label">
-            milestones
-            <button class="section-btn" onclick="Dashboard.showAddMilestone()">+ add</button>
-          </div>
-          <div class="milestone-list" id="milestone-list"></div>
+          <!-- Lower two-column grid -->
+          <div class="dash-lower-grid">
 
+            <!-- Left column -->
+            <div class="dash-lower-col">
+
+              <!-- Habit Score Tracker -->
+              <div class="dash-panel">
+                <div class="dash-panel-header">
+                  <span class="dash-panel-title">HABIT SCORE TRACKER</span>
+                  <button class="dash-link-btn" onclick="Dashboard.toggleHabitSettings()">
+                    <i class="ti ti-settings" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="form-panel hidden" id="dash-habit-settings" style="padding:6px 0 4px">
+                  <div id="dash-habit-settings-inner" style="display:flex;flex-direction:column;gap:5px"></div>
+                </div>
+                <div id="dash-habit-list"></div>
+                <div class="dash-panel-footer">
+                  <button class="dash-link-btn" onclick="navigate('habits', document.querySelector('[data-module=habits]'))">View Habits →</button>
+                </div>
+              </div>
+
+              <!-- Progress -->
+              <div class="dash-panel">
+                <div class="dash-panel-header">
+                  <span class="dash-panel-title">PROGRESS</span>
+                </div>
+                <div id="dash-progress-panel"></div>
+                <div class="dash-panel-footer">
+                  <button class="dash-link-btn" onclick="navigate('goals', document.querySelector('[data-module=goals]'))">View Full Progress →</button>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right column -->
+            <div class="dash-lower-col">
+
+              <!-- Business Pulse -->
+              <div class="dash-panel">
+                <div class="dash-panel-header">
+                  <span class="dash-panel-title">BUSINESS PULSE</span>
+                </div>
+                <div id="dash-biz-pulse"></div>
+                <div class="dash-panel-footer">
+                  <button class="dash-link-btn" onclick="navigate('blem', document.querySelector('[data-module=blem]'))">View All Businesses →</button>
+                </div>
+              </div>
+
+              <!-- Upcoming Milestones -->
+              <div class="dash-panel">
+                <div class="dash-panel-header">
+                  <span class="dash-panel-title">UPCOMING MILESTONES</span>
+                  <button class="dash-link-btn" onclick="Dashboard.showAddMilestone()">+ add</button>
+                </div>
+                <div id="dash-milestones-mini"></div>
+                <div class="dash-panel-footer">
+                  <button class="dash-link-btn" onclick="navigate('goals', document.querySelector('[data-module=goals]'))">View All Milestones →</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Morning Briefing -->
+          <div class="dash-briefing">
+            <div class="dash-briefing-header">
+              <i class="ti ti-star" aria-hidden="true"></i> MORNING BRIEFING
+            </div>
+            <div id="dash-briefing-content" class="dash-briefing-body"></div>
+            <button class="dash-hdr-btn" onclick="Dashboard.generateBriefing()" style="margin-top:10px">
+              ⚡ Generate Briefing
+            </button>
+          </div>
+
+          <!-- Milestone form -->
           <div class="form-panel hidden" id="milestone-form">
             <div class="form-title">new milestone</div>
             <div class="form-row">
@@ -228,6 +307,39 @@
               <button class="t-btn-ghost" onclick="Dashboard.hideMilestoneForm()">cancel</button>
             </div>
           </div>
+
+          <!-- AI CHAT -->
+          <div class="ai-chat-section">
+            <div class="dash-section-label">
+              ask sion os
+              <span class="section-label-sub" id="ai-status">claude sonnet · ready</span>
+            </div>
+            <div class="ai-chat-history" id="ai-chat-history">
+              <div class="ai-welcome">
+                <i class="ti ti-sparkles" aria-hidden="true"></i>
+                Ask anything about your data. I can read all modules and your vault — and update the OS when needed.
+              </div>
+            </div>
+            <div class="ai-chat-input-row">
+              <input
+                class="ai-input"
+                id="ai-input"
+                placeholder="ask about your finances, tasks, progress, journal..."
+                onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();AI.send()}"
+              />
+              <button class="ai-send-btn" onclick="AI.send()" id="ai-send-btn">
+                <i class="ti ti-send" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="ai-suggestions" id="ai-suggestions">
+              <button class="ai-chip" onclick="AI.sendQuick('How much did Blem Tuned make this month?')">Blem revenue this month</button>
+              <button class="ai-chip" onclick="AI.sendQuick('What is my D-Max coverage this month?')">D-Max coverage</button>
+              <button class="ai-chip" onclick="AI.sendQuick('What tasks are overdue across all my businesses?')">Overdue tasks</button>
+              <button class="ai-chip" onclick="AI.sendQuick('Summarise my journal entries this week')">Journal summary</button>
+              <button class="ai-chip" onclick="AI.sendQuick('What have I learned in my study courses so far?')">Study progress</button>
+            </div>
+          </div>
+
         </section>
 
         <!-- WORK -->
@@ -347,6 +459,11 @@
             </div>
           </div>
 
+          <!-- Blem revenue chart -->
+          <div class="chart-container" style="position:relative;height:130px;margin-bottom:4px;">
+            <canvas id="chart-blem-revenue"></canvas>
+          </div>
+
           <!-- Jobs table -->
           <div class="dash-section-label">
             job log
@@ -411,7 +528,12 @@
             <div class="form-row">
               <input class="t-input" id="bj-client-name"  placeholder="client name" />
               <input class="t-input" id="bj-client-phone" placeholder="client phone" />
-              <input class="t-input" id="bj-notes"        placeholder="notes (optional)" />
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="bj-notes" placeholder="notes (optional)" />
+              <select class="t-input" id="bj-account">
+                <option value="">payment account (optional)</option>
+              </select>
             </div>
             <div class="form-actions">
               <button class="t-btn" onclick="Blem.saveJob()">save job</button>
@@ -448,102 +570,79 @@
         <section id="mod-younity" class="module">
           <div class="prompt-line">
             <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
-            <span class="p-cmd"> load younity --view=crm</span>
+            <span class="p-cmd"> load younity --view=projects</span>
           </div>
 
-          <!-- Metrics -->
           <div class="metric-grid">
             <div class="metric-card green-accent">
-              <div class="mc-label">monthly target</div>
-              <div class="mc-val green">$2,000</div>
-              <div class="mc-sub">XCD / month</div>
-            </div>
-            <div class="metric-card amber-accent">
-              <div class="mc-label">gap to target</div>
-              <div class="mc-val amber" id="y-gap">$2,000</div>
-              <div class="mc-sub" id="y-gap-sub">no active revenue yet</div>
+              <div class="mc-label">active projects</div>
+              <div class="mc-val green" id="y-active-projects">0</div>
+              <div class="mc-sub">in progress</div>
             </div>
             <div class="metric-card cyan-accent">
-              <div class="mc-label">active clients</div>
-              <div class="mc-val cyan" id="y-active">0</div>
-              <div class="mc-sub">active + retained</div>
+              <div class="mc-label">open tasks</div>
+              <div class="mc-val cyan" id="y-open-tasks">0</div>
+              <div class="mc-sub">across all projects</div>
+            </div>
+            <div class="metric-card amber-accent">
+              <div class="mc-label">overdue tasks</div>
+              <div class="mc-val amber" id="y-overdue-tasks">0</div>
+              <div class="mc-sub">need attention</div>
             </div>
             <div class="metric-card">
-              <div class="mc-label">pipeline value</div>
-              <div class="mc-val white" id="y-pipeline">$0</div>
-              <div class="mc-sub">XCD total</div>
+              <div class="mc-label">completed</div>
+              <div class="mc-val white" id="y-complete-projects">0</div>
+              <div class="mc-sub">projects done</div>
             </div>
           </div>
 
-          <!-- Pipeline stages -->
           <div class="dash-section-label">
-            pipeline
-            <span class="section-label-sub" id="y-client-count"></span>
-            <button class="section-btn" onclick="Younity.showClientForm()">+ add client</button>
+            projects
+            <button class="section-btn" onclick="Younity.showProjectForm()">+ new project</button>
           </div>
-          <div class="y-pipeline" id="y-pipeline-board"></div>
+          <div id="y-project-board"></div>
 
-          <!-- Client table -->
-          <div class="dash-section-label">all clients</div>
-          <div class="blem-table-wrap">
-            <table class="blem-table">
-              <thead>
-                <tr>
-                  <th>client</th>
-                  <th>business</th>
-                  <th>stage</th>
-                  <th>service</th>
-                  <th>value (xcd)</th>
-                  <th>next action</th>
-                  <th>due</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="y-client-tbody">
-                <tr><td colspan="8" class="blem-empty">no clients yet</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Add client form -->
-          <div class="form-panel hidden" id="y-client-form">
-            <div class="form-title">add client</div>
+          <div class="form-panel hidden" id="y-project-form">
+            <div class="form-title">new project</div>
             <div class="form-row">
-              <input class="t-input" id="yc-name"    placeholder="client name" />
-              <input class="t-input" id="yc-biz"     placeholder="business name" />
-            </div>
-            <div class="form-row">
-              <select class="t-input" id="yc-stage">
-                <option value="Lead">Lead</option>
-                <option value="Proposal Sent">Proposal Sent</option>
-                <option value="Onboarding">Onboarding</option>
+              <input class="t-input" id="yp-name"   placeholder="project name" style="flex:2" />
+              <select class="t-input" id="yp-status" style="flex:0 0 130px">
+                <option value="Planning">Planning</option>
                 <option value="Active">Active</option>
-                <option value="Delivered">Delivered</option>
-                <option value="Retained">Retained</option>
-                <option value="Lost">Lost</option>
+                <option value="On Hold">On Hold</option>
+                <option value="Complete">Complete</option>
               </select>
-              <select class="t-input" id="yc-service">
-                <option value="AI Systems Audit">AI Systems Audit</option>
-                <option value="Automation Setup">Automation Setup</option>
-                <option value="CRM Build">CRM Build</option>
-                <option value="Training">Training</option>
-                <option value="Strategy">Strategy</option>
-                <option value="OS Build">OS Build</option>
-                <option value="Other">Other</option>
-              </select>
-              <input class="t-input" id="yc-value" type="number" placeholder="contract value (XCD)" />
             </div>
             <div class="form-row">
-              <input class="t-input" id="yc-next-action" placeholder="next action..." style="flex:2" />
-              <input class="t-input" id="yc-next-date"   type="date" />
+              <input class="t-input" id="yp-client"      placeholder="client name (optional)" />
+              <input class="t-input" id="yp-due"         type="date" />
             </div>
             <div class="form-row">
-              <input class="t-input" id="yc-country"  placeholder="country" />
-              <input class="t-input" id="yc-referred" placeholder="referred by (optional)" />
+              <input class="t-input" id="yp-description" placeholder="description (optional)" />
             </div>
             <div class="form-actions">
-              <button class="t-btn" onclick="Younity.saveClient()">save client</button>
-              <button class="t-btn-ghost" onclick="Younity.hideClientForm()">cancel</button>
+              <button class="t-btn" onclick="Younity.saveProject()">save project</button>
+              <button class="t-btn-ghost" onclick="Younity.hideProjectForm()">cancel</button>
+            </div>
+          </div>
+
+          <div class="form-panel hidden" id="y-task-form">
+            <div class="form-title">add task — <span id="yt-project-name"></span></div>
+            <div class="form-row">
+              <input class="t-input" id="yt-title" placeholder="task title" style="flex:2" />
+              <select class="t-input" id="yt-status" style="flex:0 0 130px">
+                <option value="To Do">To Do</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Blocked">Blocked</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="yt-due"  type="date" />
+              <input class="t-input" id="yt-time" type="number" placeholder="estimated hours" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Younity.saveTask()">save task</button>
+              <button class="t-btn-ghost" onclick="Younity.hideTaskForm()">cancel</button>
             </div>
           </div>
         </section>
@@ -571,11 +670,6 @@
               <div class="mc-label">launch status</div>
               <div class="mc-val green" id="bp-status-val">on track</div>
               <div class="mc-sub" id="bp-status-sub">projected completion ok</div>
-            </div>
-            <div class="metric-card red-accent">
-              <div class="mc-label">d-max debt / mo</div>
-              <div class="mc-val red">$3,415</div>
-              <div class="mc-sub">must cover from aug</div>
             </div>
           </div>
 
@@ -629,27 +723,30 @@
           </div>
 
           <!-- Metrics -->
+          <div class="dash-section-label" style="margin-bottom:6px">
+            metrics
+            <button class="section-btn" onclick="Finance.toggleWidgetPanel()">
+              <i class="ti ti-settings" aria-hidden="true"></i> customise
+            </button>
+          </div>
+          <div class="form-panel hidden" id="fin-widget-panel" style="padding:10px 14px;margin-bottom:8px">
+            <div class="form-title">finance widgets — choose what each card shows</div>
+            <div id="fin-widget-settings" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin-top:8px"></div>
+            <div class="form-actions" style="margin-top:8px">
+              <button class="t-btn" onclick="Finance.saveWidgetPrefs()">save</button>
+              <button class="t-btn-ghost" onclick="Finance.toggleWidgetPanel()">cancel</button>
+            </div>
+          </div>
           <div class="metric-grid">
-            <div class="metric-card green-accent">
-              <div class="mc-label">income this month</div>
-              <div class="mc-val green" id="fin-income">$0</div>
-              <div class="mc-sub">XCD collected</div>
-            </div>
-            <div class="metric-card red-accent">
-              <div class="mc-label">expenses this month</div>
-              <div class="mc-val red" id="fin-expenses">$0</div>
-              <div class="mc-sub">XCD spent</div>
-            </div>
-            <div class="metric-card amber-accent">
-              <div class="mc-label">net income</div>
-              <div class="mc-val amber" id="fin-net">$0</div>
-              <div class="mc-sub">income − expenses</div>
-            </div>
-            <div class="metric-card" id="fin-coverage-card">
-              <div class="mc-label">d-max coverage</div>
-              <div class="mc-val" id="fin-coverage">0%</div>
-              <div class="mc-sub">of $3,414.83 / mo</div>
-            </div>
+            <div id="fin-widget-card-0" class="metric-card"></div>
+            <div id="fin-widget-card-1" class="metric-card"></div>
+            <div id="fin-widget-card-2" class="metric-card"></div>
+            <div id="fin-widget-card-3" class="metric-card"></div>
+          </div>
+
+          <!-- Net income chart -->
+          <div class="chart-container" style="position:relative;height:140px;margin-bottom:4px;">
+            <canvas id="chart-net-income"></canvas>
           </div>
 
           <!-- Monthly commitments -->
@@ -722,6 +819,11 @@
             <div class="form-row">
               <input class="t-input" id="fi-amount" type="number" placeholder="amount (XCD)" />
               <input class="t-input" id="fi-date"   type="date" />
+              <select class="t-input" id="fi-account">
+                <option value="">no linked account</option>
+              </select>
+            </div>
+            <div class="form-row">
               <input class="t-input" id="fi-notes"  placeholder="notes (optional)" />
             </div>
             <div class="form-actions">
@@ -738,7 +840,7 @@
           <div class="blem-table-wrap">
             <table class="blem-table">
               <thead>
-                <tr><th>item</th><th>category</th><th>amount (xcd)</th><th>date</th><th>flags</th><th></th></tr>
+                <tr><th>item</th><th>category</th><th>amount (xcd)</th><th>date</th><th>account</th><th>flags</th><th></th></tr>
               </thead>
               <tbody id="fin-expense-tbody">
                 <tr><td colspan="6" class="blem-empty">no expenses logged yet</td></tr>
@@ -750,7 +852,6 @@
             <div class="form-row">
               <input class="t-input" id="fe-item"     placeholder="expense item" style="flex:2" />
               <select class="t-input" id="fe-category" style="flex:0 0 160px">
-                <option value="D-Max Loan">D-Max Loan</option>
                 <option value="Insurance">Insurance</option>
                 <option value="Fuel">Fuel</option>
                 <option value="Food">Food</option>
@@ -765,13 +866,12 @@
             <div class="form-row">
               <input class="t-input" id="fe-amount" type="number" placeholder="amount (XCD)" />
               <input class="t-input" id="fe-date"   type="date" />
+              <select class="t-input" id="fe-account">
+                <option value="">no linked account</option>
+              </select>
               <input class="t-input" id="fe-notes"  placeholder="notes (optional)" />
             </div>
             <div class="form-row">
-              <label class="work-checkbox-label">
-                <input type="checkbox" id="fe-is-dmax" />
-                <span>D-Max loan payment</span>
-              </label>
               <label class="work-checkbox-label">
                 <input type="checkbox" id="fe-is-biz" />
                 <span>business expense</span>
@@ -783,149 +883,455 @@
             </div>
           </div>
 
-          <!-- D-Max amortisation milestones -->
-          <div class="dash-section-label">d-max amortisation milestones</div>
+          <!-- Bank accounts -->
+          <div class="dash-section-label">
+            bank accounts
+            <span class="section-label-sub" id="fin-net-worth"></span>
+            <button class="section-btn" onclick="Finance.showTransferForm()">&#8644; transfer</button>
+            <button class="section-btn" onclick="Finance.showAccountForm()">+ add account</button>
+          </div>
+          <div class="form-panel hidden" id="fin-transfer-form">
+            <div class="form-title">transfer between accounts</div>
+            <div class="form-row">
+              <select class="t-input" id="ft-from">
+                <option value="">from account...</option>
+              </select>
+              <select class="t-input" id="ft-to">
+                <option value="">to account...</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="ft-amount" type="number" placeholder="amount (XCD)" />
+              <input class="t-input" id="ft-note"   placeholder="note (optional)" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Finance.saveTransfer()">confirm transfer</button>
+              <button class="t-btn-ghost" onclick="Finance.hideTransferForm()">cancel</button>
+            </div>
+          </div>
+          <div class="task-list" id="fin-account-list"></div>
+          <div class="form-panel hidden" id="fin-account-form">
+            <div class="form-title">add bank account</div>
+            <div class="form-row">
+              <input class="t-input" id="fa-name"    placeholder="account name (e.g. CIBC Chequing)" style="flex:2" />
+              <input class="t-input" id="fa-bank"    placeholder="bank name" />
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="fa-balance" type="number" placeholder="current balance (XCD)" />
+              <select class="t-input" id="fa-type" style="flex:0 0 150px">
+                <option value="Chequing">Chequing</option>
+                <option value="Savings">Savings</option>
+                <option value="Business">Business</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="Other">Other</option>
+              </select>
+              <select class="t-input" id="fa-currency" style="flex:0 0 100px">
+                <option value="XCD">XCD</option>
+                <option value="USD">USD</option>
+                <option value="GBP">GBP</option>
+                <option value="CAD">CAD</option>
+              </select>
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Finance.saveAccount()">save account</button>
+              <button class="t-btn-ghost" onclick="Finance.hideAccountForm()">cancel</button>
+            </div>
+          </div>
+
+          <!-- Subscriptions -->
+          <div class="dash-section-label">
+            subscriptions
+            <span class="section-label-sub" id="fin-sub-total"></span>
+            <button class="section-btn" onclick="Finance.showSubForm()">+ add subscription</button>
+          </div>
           <div class="blem-table-wrap">
             <table class="blem-table">
               <thead>
-                <tr><th>milestone</th><th>date</th><th>balance remaining (xcd)</th><th>status</th></tr>
+                <tr><th>name</th><th>cost (xcd)</th><th>cycle</th><th>next renewal</th><th>linked account</th><th>category</th><th></th></tr>
               </thead>
-              <tbody id="fin-amort-tbody"></tbody>
+              <tbody id="fin-sub-tbody">
+                <tr><td colspan="7" class="blem-empty">no subscriptions yet</td></tr>
+              </tbody>
             </table>
           </div>
+          <div class="form-panel hidden" id="fin-sub-form">
+            <div class="form-title">add subscription</div>
+            <div class="form-row">
+              <input class="t-input" id="fs-name"    placeholder="subscription name (e.g. Netflix)" style="flex:2" />
+              <select class="t-input" id="fs-category" style="flex:0 0 150px">
+                <option value="Software">Software</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Business">Business</option>
+                <option value="Health">Health</option>
+                <option value="Finance">Finance</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="fs-cost"    type="number" placeholder="cost (XCD)" />
+              <select class="t-input" id="fs-cycle" style="flex:0 0 130px">
+                <option value="Monthly">Monthly</option>
+                <option value="Annual">Annual</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Quarterly">Quarterly</option>
+              </select>
+              <input class="t-input" id="fs-renewal"  type="date" title="Next renewal date" />
+            </div>
+            <div class="form-row">
+              <select class="t-input" id="fs-account">
+                <option value="">No linked account</option>
+              </select>
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Finance.saveSub()">save subscription</button>
+              <button class="t-btn-ghost" onclick="Finance.hideSubForm()">cancel</button>
+            </div>
+          </div>
+
+
 
         </section>
 
         <!-- STUDY -->
-        <section id="mod-study" class="module">
-          <div class="prompt-line">
-            <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
-            <span class="p-cmd"> load study --tracks=3</span>
-          </div>
+        <!-- STUDY -->
+        <section id="mod-study" class="module study-module">
 
-          <!-- Study metrics -->
-          <div class="metric-grid">
-            <div class="metric-card cyan-accent">
-              <div class="mc-label">google pm</div>
-              <div class="mc-val cyan" id="st-gpm-pct">0%</div>
-              <div class="mc-sub" id="st-gpm-sub">0 lessons</div>
+          <!-- Topbar -->
+          <div class="study-topbar">
+            <div class="study-topbar-left">
+              <div class="prompt-line">
+                <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
+                <span class="p-cmd"> load study --mode=focused</span>
+              </div>
+              <div class="study-tagline">Invest in knowledge. It pays the best interest.</div>
             </div>
-            <div class="metric-card green-accent">
-              <div class="mc-label">acca foa</div>
-              <div class="mc-val green" id="st-acca-pct">0%</div>
-              <div class="mc-sub" id="st-acca-sub">0 chapters</div>
-            </div>
-            <div class="metric-card" style="border-color:#5a3a8a;background:var(--purple-dim)">
-              <div class="mc-label">trw ai campus</div>
-              <div class="mc-val purple" id="st-trw-pct">0%</div>
-              <div class="mc-sub" id="st-trw-sub">0 lessons</div>
-            </div>
-            <div class="metric-card amber-accent">
-              <div class="mc-label">study roi</div>
-              <div class="mc-val amber" id="st-roi">0%</div>
-              <div class="mc-sub">lessons tagged to biz</div>
+            <div class="study-topbar-right">
+              <button class="t-btn" onclick="Study.showPlanForm()">
+                <i class="ti ti-plus" aria-hidden="true"></i> Quick Add
+              </button>
+              <button class="t-btn-ghost" onclick="Study.toggleSettings()">
+                <i class="ti ti-settings" aria-hidden="true"></i> Study Settings
+              </button>
+              <div class="study-vault-badge" id="study-vault-badge">
+                <i class="ti ti-brand-notion" aria-hidden="true"></i>
+                Obsidian Vault · <span id="study-vault-status">Connected</span>
+              </div>
             </div>
           </div>
 
-          <!-- Google PM -->
-          <div class="dash-section-label">
-            google pm foundations
-            <button class="section-btn" onclick="Study.showLessonForm('gpm')">+ add lesson</button>
+          <!-- Course / subject tabs -->
+          <div class="study-course-row">
+            <div class="study-course-tabs" id="study-course-tabs"></div>
+            <div class="study-add-course-wrap">
+              <button class="study-add-course-btn" onclick="Study.toggleAddCourseForm()" title="Add subject">
+                <i class="ti ti-plus"></i> Add Subject
+              </button>
+              <div class="form-panel hidden" id="study-add-course-form" style="position:absolute;right:0;top:32px;z-index:20;min-width:220px">
+                <div class="form-title">new subject</div>
+                <div class="form-row">
+                  <input class="t-input" id="new-course-label" placeholder="e.g. Engine Building" style="flex:1" onkeydown="if(event.key==='Enter')Study.saveNewCourse()" />
+                </div>
+                <div class="form-actions">
+                  <button class="t-btn" onclick="Study.saveNewCourse()">add</button>
+                  <button class="t-btn-ghost" onclick="Study.toggleAddCourseForm()">cancel</button>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="study-progress-bar">
-            <div class="study-prog-fill cyan-fill" id="st-gpm-bar" style="width:0%"></div>
+
+          <!-- Metric cards -->
+          <div class="study-metrics">
+            <div class="study-metric-card">
+              <div class="smc-label">TODAY'S STUDY TIME</div>
+              <div class="smc-val" id="st-today-time">0h 0m</div>
+              <div class="smc-sub" id="st-today-goal">of 3h goal</div>
+              <div class="smc-ring-wrap">
+                <svg class="smc-ring" viewBox="0 0 36 36" aria-hidden="true">
+                  <circle class="smc-ring-bg" cx="18" cy="18" r="15.9"/>
+                  <circle class="smc-ring-fill" cx="18" cy="18" r="15.9" id="st-ring-fill"
+                    stroke-dasharray="0 100"/>
+                </svg>
+                <span class="smc-ring-pct" id="st-ring-pct">0%</span>
+              </div>
+            </div>
+            <div class="study-metric-card">
+              <div class="smc-label" id="st-subject-label">SUBJECT PROGRESS</div>
+              <div class="smc-val purple" id="st-acca-pct">0%</div>
+              <div class="smc-sub" id="st-acca-sub">0 / 0 topics</div>
+              <div class="smc-ring-wrap">
+                <svg class="smc-ring" viewBox="0 0 36 36" aria-hidden="true">
+                  <circle class="smc-ring-bg" cx="18" cy="18" r="15.9"/>
+                  <circle class="smc-ring-fill purple-ring" cx="18" cy="18" r="15.9" id="st-acca-ring"
+                    stroke-dasharray="0 100"/>
+                </svg>
+              </div>
+            </div>
+            <div class="study-metric-card">
+              <div class="smc-label">STUDY STREAK</div>
+              <div class="smc-val amber" id="st-streak">0</div>
+              <div class="smc-sub">days</div>
+              <i class="ti ti-flame smc-icon amber" aria-hidden="true"></i>
+            </div>
+            <div class="study-metric-card">
+              <div class="smc-label">EXAMS TARGET</div>
+              <div class="smc-val cyan" id="st-exam-target">Nov 2026</div>
+              <div class="smc-sub" id="st-exam-days">calculating...</div>
+              <i class="ti ti-calendar smc-icon cyan" aria-hidden="true"></i>
+            </div>
+            <div class="study-metric-card">
+              <div class="smc-label">KNOWLEDGE NOTES</div>
+              <div class="smc-val white" id="st-notes-count">0</div>
+              <div class="smc-sub">in library</div>
+              <i class="ti ti-notes smc-icon fg3" aria-hidden="true"></i>
+            </div>
           </div>
-          <div class="task-list" id="st-gpm-list"></div>
-          <div class="form-panel hidden" id="st-gpm-form">
-            <div class="form-title">add lesson — google pm foundations</div>
+
+          <!-- Main grid -->
+          <div class="study-main-grid">
+
+            <!-- LEFT COLUMN -->
+            <div class="study-left-col">
+
+              <!-- Today's study plan -->
+              <div class="study-card">
+                <div class="study-card-header">
+                  <span class="study-card-title">TODAY'S STUDY PLAN</span>
+                  <button class="section-btn" onclick="Study.showPlanForm()">+ Add Task</button>
+                </div>
+                <div id="study-plan-list"></div>
+                <div class="form-panel hidden" id="study-plan-form">
+                  <div class="form-title">add to today's plan</div>
+                  <div class="form-row">
+                    <input class="t-input" id="sp-title" placeholder="topic / session title" style="flex:2" />
+                    <select class="t-input" id="sp-course" style="flex:0 0 130px">
+                      <option value="acca">ACCA</option>
+                      <option value="gpm">Google PM</option>
+                      <option value="trw">TRW AI</option>
+                      <option value="work">Work</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div class="form-row">
+                    <input class="t-input" id="sp-start" type="time" placeholder="start time" />
+                    <input class="t-input" id="sp-end"   type="time" placeholder="end time" />
+                    <input class="t-input" id="sp-duration" type="number" placeholder="duration (mins)" />
+                  </div>
+                  <div class="form-actions">
+                    <button class="t-btn" onclick="Study.savePlanTask()">save</button>
+                    <button class="t-btn-ghost" onclick="Study.hidePlanForm()">cancel</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Study schedule bar chart -->
+              <div class="study-card">
+                <div class="study-card-header">
+                  <span class="study-card-title">STUDY SCHEDULE</span>
+                  <div style="display:flex;align-items:center;gap:6px">
+                    <button class="section-btn" onclick="Study.prevWeek()">&lsaquo;</button>
+                    <span class="fg3" style="font-size:10px" id="st-week-label">This Week</span>
+                    <button class="section-btn" onclick="Study.nextWeek()">&rsaquo;</button>
+                  </div>
+                </div>
+                <div class="study-schedule-chart" id="study-schedule-chart"></div>
+              </div>
+
+              <!-- Topics progress -->
+              <div class="study-card">
+                <div class="study-card-header">
+                  <span class="study-card-title">TOPICS PROGRESS</span>
+                  <button class="section-btn" onclick="Study.showTopicForm()">+ Add Topic</button>
+                </div>
+                <div id="study-topics-list"></div>
+                <div class="form-panel hidden" id="study-topic-form">
+                  <div class="form-title">add topic</div>
+                  <div class="form-row">
+                    <input class="t-input" id="st-topic-name" placeholder="topic name" style="flex:2" />
+                    <select class="t-input" id="st-topic-course" style="flex:0 0 130px">
+                      <option value="acca">ACCA</option>
+                      <option value="gpm">Google PM</option>
+                      <option value="trw">TRW AI</option>
+                    </select>
+                  </div>
+                  <div class="form-row">
+                    <input class="t-input" id="st-topic-total" type="number" placeholder="total lessons" />
+                    <input class="t-input" id="st-topic-done"  type="number" placeholder="completed" />
+                  </div>
+                  <div class="form-actions">
+                    <button class="t-btn" onclick="Study.saveTopic()">save</button>
+                    <button class="t-btn-ghost" onclick="Study.hideTopicForm()">cancel</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recent study sessions -->
+              <div class="study-card">
+                <div class="study-card-header">
+                  <span class="study-card-title">RECENT STUDY SESSIONS</span>
+                  <button class="section-btn" onclick="Study.showSessionForm()">+ Log Session</button>
+                </div>
+                <div class="blem-table-wrap">
+                  <table class="blem-table">
+                    <thead>
+                      <tr>
+                        <th>date</th>
+                        <th>topic / session</th>
+                        <th>duration</th>
+                        <th>source</th>
+                        <th>notes</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="study-sessions-tbody">
+                      <tr><td colspan="6" class="blem-empty">no sessions logged yet</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="form-panel hidden" id="study-session-form">
+                  <div class="form-title">log study session</div>
+                  <div class="form-row">
+                    <input class="t-input" id="ss-topic" placeholder="topic / session name" style="flex:2" />
+                    <select class="t-input" id="ss-course" style="flex:0 0 120px"></select>
+                    <select class="t-input" id="ss-source" style="flex:0 0 110px">
+                      <option value="Obsidian">Obsidian</option>
+                      <option value="Textbook">Textbook</option>
+                      <option value="Video">Video</option>
+                      <option value="Practice Qs">Practice Qs</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div class="form-row">
+                    <input class="t-input" id="ss-date"     type="date" />
+                    <input class="t-input" id="ss-duration" type="number" placeholder="duration (mins)" />
+                    <input class="t-input" id="ss-notes"    placeholder="notes (optional)" />
+                  </div>
+                  <div class="form-actions">
+                    <button class="t-btn" onclick="Study.saveSession()">save session</button>
+                    <button class="t-btn-ghost" onclick="Study.hideSessionForm()">cancel</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="study-right-col">
+
+              <!-- Knowledge library -->
+              <div class="study-card">
+                <div class="study-card-header">
+                  <span class="study-card-title">KNOWLEDGE LIBRARY (OBSIDIAN)</span>
+                  <button class="section-btn" onclick="Study.openInObsidian()">
+                    Open in Obsidian <i class="ti ti-external-link" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div id="study-vault-tree"></div>
+                <div class="study-vault-footer">
+                  <span class="fg3" style="font-size:10px">Total: <span id="st-vault-total">0</span> notes</span>
+                  <span class="fg3" style="font-size:10px">Last synced: <span id="st-vault-sync">—</span></span>
+                  <span class="store-dot dot-sqlite" style="width:6px;height:6px;border-radius:50%;flex-shrink:0"></span>
+                </div>
+              </div>
+
+              <!-- Pomodoro timer -->
+              <div class="study-card" id="study-pomodoro-card">
+                <div class="study-card-header">
+                  <span class="study-card-title">POMODORO TIMER</span>
+                  <div style="display:flex;gap:6px">
+                    <button class="section-btn" onclick="Pomodoro.setMode('work')" id="pom-btn-work">Work</button>
+                    <button class="section-btn" onclick="Pomodoro.setMode('short')" id="pom-btn-short">Short Break</button>
+                    <button class="section-btn" onclick="Pomodoro.setMode('long')" id="pom-btn-long">Long Break</button>
+                  </div>
+                </div>
+                <div class="pomodoro-display">
+                  <div class="pomodoro-session-label" id="pom-session-label">Focus Session</div>
+                  <div class="pomodoro-time" id="pom-time">25:00</div>
+                  <div class="pomodoro-ring-wrap">
+                    <svg class="pomodoro-ring" viewBox="0 0 120 120" aria-hidden="true">
+                      <circle class="pom-ring-bg" cx="60" cy="60" r="54"/>
+                      <circle class="pom-ring-fill" cx="60" cy="60" r="54" id="pom-ring"
+                        stroke-dasharray="339.3 339.3"
+                        stroke-dashoffset="0"
+                        transform="rotate(-90 60 60)"/>
+                    </svg>
+                  </div>
+                  <div class="pomodoro-controls">
+                    <button class="pom-btn" onclick="Pomodoro.toggle()" id="pom-toggle">
+                      <i class="ti ti-player-play" aria-hidden="true"></i> Start
+                    </button>
+                    <button class="pom-btn pom-btn-ghost" onclick="Pomodoro.reset()">
+                      <i class="ti ti-refresh" aria-hidden="true"></i> Reset
+                    </button>
+                  </div>
+                  <div class="pomodoro-session-count">
+                    Sessions today: <span id="pom-sessions-today" class="green">0</span>
+                    &nbsp;·&nbsp;
+                    <span id="pom-next-label" class="fg3">next: short break</span>
+                  </div>
+                  <div class="pomodoro-task-label fg3" id="pom-current-task">no task selected</div>
+                </div>
+              </div>
+
+              <!-- AI Knowledge Hub -->
+              <div class="study-card">
+                <div class="study-card-header">
+                  <span class="study-card-title">AI / KNOWLEDGE HUB</span>
+                  <span class="pill pill-cyan" style="font-size:8px">BETA</span>
+                </div>
+                <div class="study-ai-sub">Ask questions. Get insights from your knowledge.</div>
+                <div class="ai-chat-history" id="study-ai-history" style="min-height:60px;max-height:180px">
+                  <div class="ai-welcome">
+                    <i class="ti ti-sparkles" aria-hidden="true"></i>
+                    Ask anything about your study notes and vault.
+                  </div>
+                </div>
+                <div class="ai-chat-input-row" style="margin-top:6px">
+                  <input class="ai-input" id="study-ai-input"
+                    placeholder="Ask anything about your notes..."
+                    onkeydown="if(event.key==='Enter')Study.askAI()" />
+                  <button class="ai-send-btn" onclick="Study.askAI()">
+                    <i class="ti ti-send" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="ai-suggestions" style="margin-top:6px">
+                  <button class="ai-chip" onclick="Study.askQuick('Summarize my Ethics notes')">Summarize my Ethics notes</button>
+                  <button class="ai-chip" onclick="Study.askQuick('Key takeaways from Governance')">Key takeaways from Governance</button>
+                  <button class="ai-chip" onclick="Study.askQuick('Create study flashcards from my ACCA notes')">Create study flashcards</button>
+                  <button class="ai-chip" onclick="Study.askQuick('What did I study this week?')">What did I study this week?</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Settings panel (hidden by default) -->
+          <div class="form-panel hidden" id="study-settings-panel">
+            <div class="form-title">study settings</div>
             <div class="form-row">
-              <input class="t-input" id="sl-gpm-title" placeholder="lesson / module title" style="flex:2" />
-              <select class="t-input" id="sl-gpm-apply" style="flex:0 0 160px">
-                <option value="Blem Tuned">Blem Tuned</option>
-                <option value="Younity">Younity</option>
-                <option value="Blueport">Blueport</option>
-                <option value="All">All businesses</option>
-                <option value="Personal">Personal</option>
-                <option value="N/A">N/A</option>
-              </select>
+              <label class="fg2" style="font-size:11px;flex:1">Daily study goal (hours)</label>
+              <input class="t-input" id="st-daily-goal" type="number" step="0.5" style="flex:0 0 100px" />
             </div>
             <div class="form-row">
-              <input class="t-input" id="sl-gpm-concepts" placeholder="key concepts (optional)" />
+              <label class="fg2" style="font-size:11px;flex:1">Exam target date</label>
+              <input class="t-input" id="st-exam-date" type="date" style="flex:0 0 160px" />
+            </div>
+            <div class="form-row">
+              <label class="fg2" style="font-size:11px;flex:1">Pomodoro work duration (mins)</label>
+              <input class="t-input" id="st-pom-work" type="number" style="flex:0 0 100px" value="25" />
+            </div>
+            <div class="form-row">
+              <label class="fg2" style="font-size:11px;flex:1">Short break duration (mins)</label>
+              <input class="t-input" id="st-pom-short" type="number" style="flex:0 0 100px" value="5" />
+            </div>
+            <div class="form-row">
+              <label class="fg2" style="font-size:11px;flex:1">Long break duration (mins)</label>
+              <input class="t-input" id="st-pom-long" type="number" style="flex:0 0 100px" value="15" />
             </div>
             <div class="form-actions">
-              <button class="t-btn" onclick="Study.saveLesson('gpm')">save lesson</button>
-              <button class="t-btn-ghost" onclick="Study.hideLessonForm('gpm')">cancel</button>
+              <button class="t-btn" onclick="Study.saveSettings()">save settings</button>
+              <button class="t-btn-ghost" onclick="Study.toggleSettings()">close</button>
             </div>
           </div>
-
-          <!-- ACCA FOA -->
-          <div class="dash-section-label">
-            acca foa
-            <button class="section-btn" onclick="Study.showLessonForm('acca')">+ add chapter</button>
-          </div>
-          <div class="study-progress-bar">
-            <div class="study-prog-fill green-fill" id="st-acca-bar" style="width:0%"></div>
-          </div>
-          <div class="task-list" id="st-acca-list"></div>
-          <div class="form-panel hidden" id="st-acca-form">
-            <div class="form-title">add chapter — acca foa</div>
-            <div class="form-row">
-              <input class="t-input" id="sl-acca-title" placeholder="chapter / topic title" style="flex:2" />
-              <select class="t-input" id="sl-acca-apply" style="flex:0 0 160px">
-                <option value="Blem Tuned">Blem Tuned</option>
-                <option value="Younity">Younity</option>
-                <option value="Blueport">Blueport</option>
-                <option value="All">All businesses</option>
-                <option value="Personal">Personal</option>
-                <option value="N/A">N/A</option>
-              </select>
-            </div>
-            <div class="form-row">
-              <input class="t-input" id="sl-acca-concepts" placeholder="key concepts (optional)" />
-            </div>
-            <div class="form-actions">
-              <button class="t-btn" onclick="Study.saveLesson('acca')">save chapter</button>
-              <button class="t-btn-ghost" onclick="Study.hideLessonForm('acca')">cancel</button>
-            </div>
-          </div>
-
-          <!-- TRW AI Campus -->
-          <div class="dash-section-label">
-            trw ai campus
-            <button class="section-btn" onclick="Study.showLessonForm('trw')">+ add lesson</button>
-          </div>
-          <div class="study-progress-bar">
-            <div class="study-prog-fill" id="st-trw-bar" style="width:0%;background:var(--purple)"></div>
-          </div>
-          <div class="task-list" id="st-trw-list"></div>
-          <div class="form-panel hidden" id="st-trw-form">
-            <div class="form-title">add lesson — trw ai campus</div>
-            <div class="form-row">
-              <input class="t-input" id="sl-trw-title" placeholder="lesson title" style="flex:2" />
-              <select class="t-input" id="sl-trw-apply" style="flex:0 0 160px">
-                <option value="Younity">Younity</option>
-                <option value="Blem Tuned">Blem Tuned</option>
-                <option value="Blueport">Blueport</option>
-                <option value="All">All businesses</option>
-                <option value="Personal">Personal</option>
-                <option value="N/A">N/A</option>
-              </select>
-            </div>
-            <div class="form-row">
-              <input class="t-input" id="sl-trw-concepts" placeholder="key concepts (optional)" />
-            </div>
-            <div class="form-actions">
-              <button class="t-btn" onclick="Study.saveLesson('trw')">save lesson</button>
-              <button class="t-btn-ghost" onclick="Study.hideLessonForm('trw')">cancel</button>
-            </div>
-          </div>
-
-          <!-- Skills index -->
-          <div class="dash-section-label">
-            skills index
-            <span class="section-label-sub" id="st-skills-count"></span>
-          </div>
-          <div class="study-skills-grid" id="st-skills-grid"></div>
 
         </section>
 
@@ -934,6 +1340,25 @@
           <div class="prompt-line">
             <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
             <span class="p-cmd"> load gym --goal=160lb</span>
+          </div>
+
+          <!-- Date filter -->
+          <div class="gym-filter-bar">
+            <span class="fg3" style="font-size:11px;font-family:var(--mono)">filter —</span>
+            <button class="gym-fmode-btn active" data-mode="month" onclick="Gym.setFilterMode('month')">month</button>
+            <button class="gym-fmode-btn" data-mode="day" onclick="Gym.setFilterMode('day')">day</button>
+            <button class="gym-fmode-btn" data-mode="range" onclick="Gym.setFilterMode('range')">range</button>
+            <div id="gym-filter-month" style="display:flex;align-items:center">
+              <select class="t-input" id="gym-month-filter" onchange="Gym.setMonth(this.value)" style="width:170px;font-size:11px;padding:4px 8px"></select>
+            </div>
+            <div id="gym-filter-day" style="display:none;align-items:center">
+              <input class="t-input" type="date" id="gym-day-filter" onchange="Gym.setDay(this.value)" style="font-size:11px;padding:4px 8px" />
+            </div>
+            <div id="gym-filter-range" style="display:none;align-items:center;gap:6px">
+              <input class="t-input" type="date" id="gym-range-start" onchange="Gym.setRange()" style="font-size:11px;padding:4px 8px" />
+              <span class="fg3" style="font-size:11px">→</span>
+              <input class="t-input" type="date" id="gym-range-end" onchange="Gym.setRange()" style="font-size:11px;padding:4px 8px" />
+            </div>
           </div>
 
           <!-- Weight hero -->
@@ -968,7 +1393,13 @@
             <input class="qa-input" id="gym-weight-input" type="number" step="0.1" placeholder="weight in lbs..." style="max-width:200px"
               onkeydown="if(event.key==='Enter') Gym.logWeight()" />
             <input class="t-input" id="gym-weight-date" type="date" style="flex:0 0 150px" />
-            <button class="qa-btn" onclick="Gym.logWeight()">log</button>
+            <button class="qa-btn" id="gym-weight-log-btn" onclick="Gym.logWeight()">log</button>
+            <button class="t-btn-ghost" id="gym-weight-cancel-btn" style="display:none;font-size:10px;padding:4px 8px" onclick="Gym.cancelEditWeight()">cancel</button>
+          </div>
+
+          <!-- Weight chart -->
+          <div class="chart-container" style="position:relative;height:160px;margin-bottom:8px;">
+            <canvas id="chart-weight"></canvas>
           </div>
 
           <!-- Weight log table -->
@@ -991,7 +1422,7 @@
           </div>
           <div class="task-list" id="gym-session-list"></div>
           <div class="form-panel hidden" id="gym-session-form">
-            <div class="form-title">log workout session</div>
+            <div class="form-title" id="gs-form-title">log workout session</div>
             <div class="form-row">
               <input class="t-input" id="gs-name" placeholder="session description (e.g. Upper push — chest, shoulders)" style="flex:2" />
               <select class="t-input" id="gs-type" style="flex:0 0 140px">
@@ -1018,9 +1449,14 @@
               <input class="t-input" id="gs-exercises" placeholder="exercises (optional)" />
             </div>
             <div class="form-actions">
-              <button class="t-btn" onclick="Gym.saveSession()">save session</button>
+              <button class="t-btn" id="gs-save-btn" onclick="Gym.saveSession()">save session</button>
               <button class="t-btn-ghost" onclick="Gym.hideSessionForm()">cancel</button>
             </div>
+          </div>
+
+          <!-- Calorie chart -->
+          <div class="chart-container" style="position:relative;height:130px;margin-bottom:8px;">
+            <canvas id="chart-calories"></canvas>
           </div>
 
           <!-- Food log -->
@@ -1037,7 +1473,7 @@
           </div>
           <div class="task-list" id="gym-food-list"></div>
           <div class="form-panel hidden" id="gym-food-form">
-            <div class="form-title">log meal</div>
+            <div class="form-title" id="gf-form-title">log meal</div>
             <div class="form-row">
               <input class="t-input" id="gf-meal"    placeholder="meal name" style="flex:2" />
               <select class="t-input" id="gf-type" style="flex:0 0 130px">
@@ -1057,8 +1493,684 @@
               <input class="t-input" id="gf-date" type="date" />
             </div>
             <div class="form-actions">
-              <button class="t-btn" onclick="Gym.saveFood()">save meal</button>
+              <button class="t-btn" id="gf-save-btn" onclick="Gym.saveFood()">save meal</button>
               <button class="t-btn-ghost" onclick="Gym.hideFoodForm()">cancel</button>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- HABITS -->
+        <section id="mod-habits" class="module">
+          <div class="prompt-line">
+            <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
+            <span class="p-cmd"> load habits --view=score</span>
+          </div>
+
+          <div class="metric-grid" id="habits-metrics"></div>
+
+          <div class="dash-section-label">
+            today's habits
+            <span class="section-label-sub" id="habits-today-score"></span>
+            <button class="section-btn" onclick="Habits.toggleSettings()">
+              <i class="ti ti-settings" aria-hidden="true"></i> manage
+            </button>
+          </div>
+          <div class="form-panel hidden" id="habits-settings-panel" style="padding:12px 14px">
+            <div id="habits-settings-inner"></div>
+          </div>
+          <div id="habits-today"></div>
+
+          <div class="dash-section-label">30-day history</div>
+          <div id="habits-calendar"></div>
+
+          <div class="dash-section-label">habit stats — last 30 days</div>
+          <div id="habits-stats"></div>
+        </section>
+
+        <!-- GOALS & MILESTONES -->
+        <section id="mod-goals" class="module">
+          <div class="prompt-line">
+            <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
+            <span class="p-cmd"> load goals --view=milestones</span>
+          </div>
+
+          <div class="metric-grid" id="goals-summary"></div>
+
+          <div class="dash-section-label">
+            milestones &amp; goals
+            <button class="section-btn" onclick="Goals.showForm()">+ add</button>
+          </div>
+          <div id="goals-list"></div>
+
+          <div class="form-panel hidden" id="goals-form">
+            <div class="form-title">new goal</div>
+            <div class="form-row">
+              <input class="t-input" id="gl-name"    placeholder="goal name" style="flex:2" />
+              <input class="t-input" id="gl-date"    type="date" />
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="gl-target"  type="number" placeholder="target value (optional)" />
+              <input class="t-input" id="gl-current" type="number" placeholder="current value (optional)" />
+              <input class="t-input" id="gl-unit"    placeholder="unit  e.g. lbs / XCD / %" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Goals.saveGoal()">save goal</button>
+              <button class="t-btn-ghost" onclick="Goals.hideForm()">cancel</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- JOURNAL -->
+        <section id="mod-journal" class="module">
+          <div class="prompt-line">
+            <span class="p-user">sion@lifeos</span><span class="p-path">:~$</span>
+            <span class="p-cmd"> load journal --private=true</span>
+          </div>
+
+          <!-- Metrics -->
+          <div class="metric-grid">
+            <div class="metric-card green-accent">
+              <div class="mc-label">total entries</div>
+              <div class="mc-val green" id="j-total">0</div>
+              <div class="mc-sub">all time</div>
+            </div>
+            <div class="metric-card cyan-accent">
+              <div class="mc-label">this month</div>
+              <div class="mc-val cyan" id="j-month">0</div>
+              <div class="mc-sub">entries</div>
+            </div>
+            <div class="metric-card amber-accent">
+              <div class="mc-label">current streak</div>
+              <div class="mc-val amber" id="j-streak">0</div>
+              <div class="mc-sub">days</div>
+            </div>
+            <div class="metric-card">
+              <div class="mc-label">avg mood</div>
+              <div class="mc-val white" id="j-mood">—</div>
+              <div class="mc-sub">this month</div>
+            </div>
+          </div>
+
+          <!-- New entry form -->
+          <div class="dash-section-label">
+            new entry
+            <button class="section-btn" onclick="Journal.showEntryForm()">+ write</button>
+          </div>
+          <div class="form-panel hidden" id="j-entry-form">
+            <div class="form-title" id="j-form-title">new journal entry</div>
+            <div class="form-row">
+              <input class="t-input" id="je-title" placeholder="title (optional)" style="flex:2" />
+              <input class="t-input" id="je-date" type="date" style="flex:0 0 160px" />
+            </div>
+            <div class="form-row">
+              <select class="t-input" id="je-mood" style="flex:0 0 160px">
+                <option value="">mood...</option>
+                <option value="5">5 — Excellent</option>
+                <option value="4">4 — Good</option>
+                <option value="3">3 — Neutral</option>
+                <option value="2">2 — Low</option>
+                <option value="1">1 — Bad</option>
+              </select>
+              <input class="t-input" id="je-tags" placeholder="tags (comma separated, optional)" />
+            </div>
+            <div class="form-row">
+              <textarea class="t-input" id="je-body" placeholder="write your entry..." style="min-height:120px;resize:vertical;flex:1;line-height:1.6"></textarea>
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Journal.saveEntry()">save entry</button>
+              <button class="t-btn-ghost" onclick="Journal.hideEntryForm()">cancel</button>
+            </div>
+          </div>
+
+          <!-- Entry list -->
+          <div class="dash-section-label">
+            entries
+            <span class="section-label-sub" id="j-count"></span>
+          </div>
+          <div id="j-entry-list"></div>
+        </section>
+
+        <!-- CALENDAR -->
+        <section id="mod-calendar" class="module cal-module">
+
+          <!-- Topbar -->
+          <div class="cal-topbar">
+            <div class="cal-topbar-left">
+              <div class="cal-greeting" id="cal-greeting">Good morning, Sion.</div>
+              <div class="cal-tagline">Plan your time. Protect your focus. Execute your day.</div>
+            </div>
+            <div class="cal-topbar-right">
+              <button class="t-btn" onclick="Cal.showEventForm()">
+                <i class="ti ti-plus" aria-hidden="true"></i> New Event
+              </button>
+              <button class="t-btn-ghost" onclick="Cal.startFocusTime()">
+                <i class="ti ti-target" aria-hidden="true"></i> Focus Time
+              </button>
+              <button class="t-btn-ghost" onclick="Cal.toggleSettings()">
+                <i class="ti ti-settings" aria-hidden="true"></i> Calendar Settings
+              </button>
+              <div class="cal-notif-bell" onclick="Cal.toggleAlerts()">
+                <i class="ti ti-bell" aria-hidden="true"></i>
+                <span class="cal-notif-badge" id="cal-notif-count">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metric strip -->
+          <div class="cal-metric-strip">
+            <div class="cal-metric">
+              <div class="cal-metric-label">TODAY'S EVENTS</div>
+              <div class="cal-metric-val green" id="cal-today-count">0</div>
+              <div class="cal-metric-sub">scheduled</div>
+              <i class="ti ti-calendar-event cal-metric-icon green" aria-hidden="true"></i>
+            </div>
+            <div class="cal-metric">
+              <div class="cal-metric-label">FOCUS BLOCKS</div>
+              <div class="cal-metric-val purple" id="cal-focus-time">0h 0m</div>
+              <div class="cal-metric-sub">deep work</div>
+              <i class="ti ti-target cal-metric-icon purple" aria-hidden="true"></i>
+            </div>
+            <div class="cal-metric">
+              <div class="cal-metric-label">UPCOMING DEADLINES</div>
+              <div class="cal-metric-val amber" id="cal-deadlines-count">0</div>
+              <div class="cal-metric-sub">next 7 days</div>
+              <i class="ti ti-alert-triangle cal-metric-icon amber" aria-hidden="true"></i>
+            </div>
+            <div class="cal-metric">
+              <div class="cal-metric-label">MEETINGS</div>
+              <div class="cal-metric-val cyan" id="cal-meetings-count">0</div>
+              <div class="cal-metric-sub">today</div>
+              <i class="ti ti-users cal-metric-icon cyan" aria-hidden="true"></i>
+            </div>
+            <div class="cal-metric">
+              <div class="cal-metric-label">FREE TIME</div>
+              <div class="cal-metric-val white" id="cal-free-time">0h 0m</div>
+              <div class="cal-metric-sub">available</div>
+              <div class="cal-donut-wrap">
+                <svg class="cal-donut" viewBox="0 0 36 36" aria-hidden="true">
+                  <circle class="cal-donut-bg" cx="18" cy="18" r="15.9"/>
+                  <circle class="cal-donut-fill" cx="18" cy="18" r="15.9" id="cal-donut-fill"
+                    stroke-dasharray="0 100" transform="rotate(-90 18 18)"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main body -->
+          <div class="cal-body">
+
+            <!-- Centre: calendar view -->
+            <div class="cal-main">
+
+              <!-- View controls -->
+              <div class="cal-controls">
+                <div class="cal-nav-left">
+                  <button class="cal-nav-btn" onclick="Cal.goToday()">Today</button>
+                  <button class="cal-nav-btn cal-arrow" onclick="Cal.prevDay()">
+                    <i class="ti ti-chevron-left" aria-hidden="true"></i>
+                  </button>
+                  <button class="cal-nav-btn cal-arrow" onclick="Cal.nextDay()">
+                    <i class="ti ti-chevron-right" aria-hidden="true"></i>
+                  </button>
+                  <div class="cal-date-display">
+                    <i class="ti ti-calendar" aria-hidden="true"></i>
+                    <span id="cal-date-label">Thu, 5 Jun 2026</span>
+                  </div>
+                </div>
+                <div class="cal-view-tabs">
+                  <button class="cal-view-tab active" onclick="Cal.setView('day',   this)" id="tab-day">Day</button>
+                  <button class="cal-view-tab"        onclick="Cal.setView('week',  this)" id="tab-week">Week</button>
+                  <button class="cal-view-tab"        onclick="Cal.setView('month', this)" id="tab-month">Month</button>
+                  <button class="cal-view-tab"        onclick="Cal.setView('agenda',this)" id="tab-agenda">Agenda</button>
+                </div>
+                <button class="cal-nav-btn" onclick="Cal.toggleFilters()">
+                  <i class="ti ti-filter" aria-hidden="true"></i> Filter
+                </button>
+              </div>
+
+              <!-- All-day strip -->
+              <div class="cal-allday-strip" id="cal-allday-strip"></div>
+
+              <!-- Calendar view area -->
+              <div class="cal-view-area" id="cal-view-area"></div>
+
+              <!-- Filters panel -->
+              <div class="cal-filters-panel hidden" id="cal-filters-panel">
+                <div class="cal-filters-title">CALENDAR FILTERS <button class="section-btn" onclick="Cal.toggleFilters()">close</button></div>
+                <div id="cal-filter-list"></div>
+              </div>
+
+            </div>
+
+            <!-- Middle: mini calendar + upcoming -->
+            <div class="cal-middle">
+              <!-- Mini calendar -->
+              <div class="cal-mini-card">
+                <div class="cal-mini-header">
+                  <button class="cal-nav-btn cal-arrow" onclick="Cal.miniPrev()">
+                    <i class="ti ti-chevron-left" aria-hidden="true"></i>
+                  </button>
+                  <span class="cal-mini-month" id="cal-mini-month">June 2026</span>
+                  <button class="cal-nav-btn cal-arrow" onclick="Cal.miniNext()">
+                    <i class="ti ti-chevron-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="cal-mini-grid" id="cal-mini-grid"></div>
+              </div>
+
+              <!-- Upcoming 7 days -->
+              <div class="cal-mini-card">
+                <div class="cal-mini-section-label">UPCOMING (Next 7 Days)</div>
+                <div id="cal-upcoming-list"></div>
+              </div>
+            </div>
+
+            <!-- Right: tasks, focus blocks, deadlines -->
+            <div class="cal-right">
+
+              <!-- Today's tasks -->
+              <div class="cal-right-card">
+                <div class="cal-right-header">
+                  <span class="cal-right-title">TODAY'S TASKS</span>
+                  <button class="section-btn" onclick="Cal.openAllTasks()">View all</button>
+                </div>
+                <div id="cal-tasks-list"></div>
+                <button class="cal-add-btn" onclick="Cal.showQuickTask()">
+                  <i class="ti ti-plus" aria-hidden="true"></i> Add Task
+                </button>
+              </div>
+
+              <!-- Focus blocks -->
+              <div class="cal-right-card">
+                <div class="cal-right-header">
+                  <span class="cal-right-title">FOCUS BLOCKS</span>
+                  <span class="fg3" style="font-size:10px" id="cal-focus-planned">0h planned</span>
+                </div>
+                <div id="cal-focus-list"></div>
+                <button class="cal-add-btn" onclick="Cal.showFocusForm()">
+                  <i class="ti ti-plus" aria-hidden="true"></i> Add Focus Block
+                </button>
+              </div>
+
+              <!-- Upcoming deadlines -->
+              <div class="cal-right-card">
+                <div class="cal-right-header">
+                  <span class="cal-right-title" style="color:var(--amber)">UPCOMING DEADLINES</span>
+                  <button class="section-btn" onclick="Cal.viewAllDeadlines()">View all</button>
+                </div>
+                <div id="cal-deadlines-list"></div>
+                <button class="cal-add-btn" onclick="Cal.showDeadlineForm()">
+                  <i class="ti ti-plus" aria-hidden="true"></i> Add Deadline
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- New event form -->
+          <div class="form-panel hidden" id="cal-event-form">
+            <div class="form-title" id="cal-form-title">new event</div>
+            <div class="form-row">
+              <input class="t-input" id="ce-title" placeholder="event title" style="flex:2" />
+              <select class="t-input" id="ce-category" style="flex:0 0 160px">
+                <option value="Personal">Personal</option>
+                <option value="Work">Work (Silcomm)</option>
+                <option value="NovaTrust">NovaTrust</option>
+                <option value="Blem Tuned">Blem Tuned</option>
+                <option value="Younity">Younity</option>
+                <option value="Blueport">Blueport</option>
+                <option value="Study">Study (ACCA)</option>
+                <option value="Gym">Gym</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="ce-date"  type="date" />
+              <input class="t-input" id="ce-start" type="time" />
+              <input class="t-input" id="ce-end"   type="time" />
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="ce-notes" placeholder="notes (optional)" />
+              <label class="work-checkbox-label">
+                <input type="checkbox" id="ce-allday" onchange="Cal.toggleAllDay(this)" />
+                <span>all-day event</span>
+              </label>
+              <label class="work-checkbox-label">
+                <input type="checkbox" id="ce-meeting" />
+                <span>is a meeting</span>
+              </label>
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Cal.saveEvent()">save event</button>
+              <button class="t-btn-ghost" onclick="Cal.hideEventForm()">cancel</button>
+            </div>
+          </div>
+
+          <!-- Focus block form -->
+          <div class="form-panel hidden" id="cal-focus-form">
+            <div class="form-title">add focus block</div>
+            <div class="form-row">
+              <input class="t-input" id="cf-title"    placeholder="what are you focusing on?" style="flex:2" />
+              <select class="t-input" id="cf-category" style="flex:0 0 160px">
+                <option value="Study">Study (ACCA)</option>
+                <option value="Work">Work (Silcomm)</option>
+                <option value="Blem Tuned">Blem Tuned</option>
+                <option value="Younity">Younity</option>
+                <option value="Blueport">Blueport</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="cf-date"     type="date" />
+              <input class="t-input" id="cf-start"    type="time" />
+              <input class="t-input" id="cf-end"      type="time" />
+              <input class="t-input" id="cf-duration" type="number" placeholder="duration (mins)" style="flex:0 0 140px" />
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="cf-notes" placeholder="notes (optional)" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Cal.saveFocusBlock()">save block</button>
+              <button class="t-btn-ghost" onclick="Cal.hideFocusForm()">cancel</button>
+            </div>
+          </div>
+
+          <!-- Deadline form -->
+          <div class="form-panel hidden" id="cal-deadline-form">
+            <div class="form-title">add deadline</div>
+            <div class="form-row">
+              <input class="t-input" id="cd-title"    placeholder="deadline title" style="flex:2" />
+              <select class="t-input" id="cd-category" style="flex:0 0 160px">
+                <option value="Study">Study</option>
+                <option value="Work">Work</option>
+                <option value="Blem Tuned">Blem Tuned</option>
+                <option value="Younity">Younity</option>
+                <option value="Blueport">Blueport</option>
+                <option value="Personal">Personal</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="t-input" id="cd-date"  type="date" />
+              <input class="t-input" id="cd-notes" placeholder="notes (optional)" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Cal.saveDeadline()">save deadline</button>
+              <button class="t-btn-ghost" onclick="Cal.hideDeadlineForm()">cancel</button>
+            </div>
+          </div>
+
+          <!-- Settings panel -->
+          <div class="form-panel hidden" id="cal-settings-panel">
+            <div class="form-title">calendar settings</div>
+            <div class="form-row">
+              <label class="fg2" style="font-size:11px;flex:1">Sleep hours (for free time calc)</label>
+              <input class="t-input" id="cs-sleep" type="number" step="0.5" style="flex:0 0 100px" value="7" />
+            </div>
+            <div class="form-row">
+              <label class="fg2" style="font-size:11px;flex:1">Day start hour</label>
+              <input class="t-input" id="cs-day-start" type="number" min="0" max="12" style="flex:0 0 100px" value="6" />
+            </div>
+            <div class="form-row">
+              <label class="fg2" style="font-size:11px;flex:1">Day end hour</label>
+              <input class="t-input" id="cs-day-end" type="number" min="18" max="24" style="flex:0 0 100px" value="22" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="Cal.saveSettings()">save</button>
+              <button class="t-btn-ghost" onclick="Cal.toggleSettings()">close</button>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- EMAIL -->
+        <section id="mod-email" class="module email-module">
+
+          <!-- Topbar -->
+          <div class="email-topbar">
+            <div>
+              <div class="email-greeting" id="email-greeting">Good morning, Sion.</div>
+              <div class="email-tagline">Inbox zero is the goal. Focus on what matters.</div>
+            </div>
+            <div class="email-topbar-right">
+              <button class="t-btn" onclick="EmailModule.compose()">
+                <i class="ti ti-edit" aria-hidden="true"></i> New Email
+              </button>
+              <button class="t-btn-ghost" onclick="EmailModule.toggleSettings()">
+                <i class="ti ti-settings" aria-hidden="true"></i> Email Settings
+              </button>
+              <div class="email-search-wrap">
+                <i class="ti ti-search" aria-hidden="true"></i>
+                <input class="email-search" id="email-search"
+                  placeholder="Search emails..."
+                  onkeydown="if(event.key==='Enter')EmailModule.search(this.value);if(event.key==='Escape')EmailModule.clearSearch()" />
+                <button class="email-search-clear hidden" id="email-search-clear"
+                  onclick="EmailModule.clearSearch()" title="Clear search">
+                  <i class="ti ti-x" aria-hidden="true"></i>
+                </button>
+                <span class="email-search-shortcut">⌘K</span>
+              </div>
+              <div class="cal-notif-bell">
+                <i class="ti ti-bell" aria-hidden="true"></i>
+                <span class="cal-notif-badge" id="email-unread-badge">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main layout -->
+          <div class="email-layout">
+
+            <!-- Left: folder + label sidebar -->
+            <div class="email-sidebar">
+              <button class="email-compose-btn" onclick="EmailModule.compose()">
+                <i class="ti ti-edit" aria-hidden="true"></i> Compose
+              </button>
+
+              <!-- Auth prompt -->
+              <div id="email-auth-prompt" class="hidden" style="display:none">
+                <div class="email-auth-msg">Connect your Gmail to get started</div>
+                <button class="t-btn" onclick="EmailModule.connectGmail()" style="width:100%;margin-top:8px">
+                  <i class="ti ti-brand-google" aria-hidden="true"></i> Connect Gmail
+                </button>
+              </div>
+
+              <!-- Folders -->
+              <div class="email-folder-section">
+                <div class="email-folder-label">MAIL</div>
+                <button class="email-folder-item active" id="folder-inbox" onclick="EmailModule.setFolder('INBOX', this)">
+                  <i class="ti ti-inbox" aria-hidden="true"></i> Inbox
+                  <span class="email-folder-count" id="folder-inbox-count"></span>
+                </button>
+                <button class="email-folder-item" id="folder-starred" onclick="EmailModule.setFolder('STARRED', this)">
+                  <i class="ti ti-star" aria-hidden="true"></i> Starred
+                  <span class="email-folder-count" id="folder-starred-count"></span>
+                </button>
+                <button class="email-folder-item" onclick="EmailModule.setFolder('SENT', this)">
+                  <i class="ti ti-send" aria-hidden="true"></i> Sent
+                </button>
+                <button class="email-folder-item" onclick="EmailModule.setFolder('DRAFT', this)">
+                  <i class="ti ti-file" aria-hidden="true"></i> Drafts
+                  <span class="email-folder-count" id="folder-drafts-count"></span>
+                </button>
+                <button class="email-folder-item" onclick="EmailModule.setFolder('SPAM', this)">
+                  <i class="ti ti-shield-x" aria-hidden="true"></i> Spam
+                  <span class="email-folder-count" id="folder-spam-count"></span>
+                </button>
+                <button class="email-folder-item" onclick="EmailModule.setFolder('TRASH', this)">
+                  <i class="ti ti-trash" aria-hidden="true"></i> Trash
+                </button>
+                <button class="email-folder-item" onclick="EmailModule.setFolder('SNOOZED', this)">
+                  <i class="ti ti-clock" aria-hidden="true"></i> Snoozed
+                </button>
+                <button class="email-folder-item" onclick="EmailModule.setFolder('ARCHIVE', this)">
+                  <i class="ti ti-archive" aria-hidden="true"></i> Archive
+                </button>
+              </div>
+
+              <!-- OS Labels -->
+              <div class="email-folder-section">
+                <div class="email-folder-label">LABELS</div>
+                <div id="email-labels-list"></div>
+              </div>
+            </div>
+
+            <!-- Centre: email list -->
+            <div class="email-list-pane">
+              <div class="email-list-header">
+                <div class="email-list-tabs">
+                  <button class="email-tab active" onclick="EmailModule.setTab('primary', this)">Primary</button>
+                  <button class="email-tab" onclick="EmailModule.setTab('social', this)">Social</button>
+                  <button class="email-tab" onclick="EmailModule.setTab('updates', this)">Updates</button>
+                  <button class="email-tab" onclick="EmailModule.setTab('forums', this)">Forums</button>
+                </div>
+                <div class="email-sort">
+                  Sort: <select class="y-stage-select" onchange="EmailModule.setSort(this.value)">
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
+                    <option value="unread">Unread first</option>
+                  </select>
+                </div>
+              </div>
+              <div id="email-list" class="email-list-body"></div>
+              <div class="email-list-footer" id="email-list-footer"></div>
+            </div>
+
+            <!-- Right: email detail -->
+            <div class="email-detail-pane" id="email-detail-pane">
+              <div class="email-detail-empty" id="email-detail-empty">
+                <i class="ti ti-mail-opened" aria-hidden="true"></i>
+                <div>Select an email to read</div>
+              </div>
+              <div class="hidden" id="email-detail-content">
+                <!-- Toolbar -->
+                <div class="email-detail-toolbar">
+                  <button class="cal-nav-btn" onclick="EmailModule.closeDetail()">
+                    <i class="ti ti-arrow-left" aria-hidden="true"></i>
+                  </button>
+                  <button class="cal-nav-btn" id="email-detail-archive" title="Archive">
+                    <i class="ti ti-archive" aria-hidden="true"></i>
+                  </button>
+                  <button class="cal-nav-btn" id="email-detail-trash" title="Trash">
+                    <i class="ti ti-trash" aria-hidden="true"></i>
+                  </button>
+                  <button class="cal-nav-btn" id="email-detail-star" title="Star">
+                    <i class="ti ti-star" aria-hidden="true"></i>
+                  </button>
+                  <div style="flex:1"></div>
+                  <button class="cal-nav-btn" id="email-ai-toggle" onclick="EmailModule.toggleAIPanel()" title="AI Assistant" style="color:var(--green)">
+                    <i class="ti ti-sparkles" aria-hidden="true"></i> AI
+                  </button>
+                  <span class="email-detail-label" id="email-detail-label-badge"></span>
+                </div>
+                <!-- Subject -->
+                <div class="email-detail-subject" id="email-detail-subject"></div>
+                <!-- From -->
+                <div class="email-detail-from">
+                  <div class="email-avatar" id="email-detail-avatar"></div>
+                  <div class="email-detail-from-info">
+                    <div class="email-detail-from-name" id="email-detail-from-name"></div>
+                    <div class="email-detail-from-addr" id="email-detail-from-addr"></div>
+                  </div>
+                  <div class="email-detail-date" id="email-detail-date"></div>
+                </div>
+                <!-- Body -->
+                <div class="email-detail-body" id="email-detail-body"></div>
+                <!-- Attachments -->
+                <div class="email-attachments" id="email-attachments"></div>
+                <!-- Reply bar -->
+                <div class="email-reply-bar">
+                  <div class="email-phase-b-notice">
+                    <i class="ti ti-info-circle" aria-hidden="true"></i>
+                    Reply &amp; Forward coming in Phase B
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Far right: AI assistant panel -->
+            <div class="email-ai-panel" id="email-ai-panel">
+              <!-- Auth state -->
+              <div id="email-ai-auth">
+                <div class="email-ai-title">CONNECTED ACCOUNTS</div>
+                <div class="email-account-row" id="email-account-gmail">
+                  <i class="ti ti-brand-google" style="color:#EA4335" aria-hidden="true"></i>
+                  <div class="email-account-info">
+                    <div class="email-account-name">Gmail</div>
+                    <div class="email-account-addr" id="gmail-account-addr">not connected</div>
+                  </div>
+                  <span class="email-account-dot" id="gmail-status-dot"></span>
+                </div>
+                <button class="t-btn" id="gmail-connect-btn" onclick="EmailModule.connectGmail()" style="width:100%;margin-top:8px;display:none">
+                  <i class="ti ti-brand-google" aria-hidden="true"></i> Connect Gmail
+                </button>
+                <div style="margin-top:12px;font-size:10px;color:var(--fg3)">
+                  + Add Account (coming Sprint 19)
+                </div>
+              </div>
+
+              <!-- AI analysis (shown when email selected) -->
+              <div class="hidden" id="email-ai-analysis">
+                <div class="email-ai-title">
+                  AI EMAIL ASSISTANT
+                  <span class="pill pill-cyan" style="font-size:8px">BETA</span>
+                </div>
+
+                <div class="email-ai-section">
+                  <div class="email-ai-section-label">
+                    <i class="ti ti-sparkles" aria-hidden="true"></i> Smart Summary
+                  </div>
+                  <div class="email-ai-summary" id="email-ai-summary">Analysing...</div>
+                </div>
+
+                <div class="email-ai-section" id="email-finance-alert" style="display:none">
+                  <div class="email-ai-section-label amber">
+                    <i class="ti ti-coin" aria-hidden="true"></i> Finance Alert
+                  </div>
+                  <div class="email-finance-detail" id="email-finance-detail"></div>
+                  <div class="alert-item alert-green" id="email-finance-created" style="display:none">
+                    <i class="ti ti-check" aria-hidden="true"></i> Auto-logged to Finance
+                  </div>
+                </div>
+
+                <div class="email-ai-section" id="email-suggested-actions">
+                  <div class="email-ai-section-label">
+                    <i class="ti ti-lightning" aria-hidden="true"></i> Suggested Actions
+                  </div>
+                  <div id="email-actions-list"></div>
+                </div>
+
+                <button class="email-create-task-btn" onclick="EmailModule.createTaskFromEmail()">
+                  <i class="ti ti-plus" aria-hidden="true"></i> Create Task from Email
+                </button>
+
+                <div class="email-ai-section">
+                  <div class="email-ai-section-label">
+                    <i class="ti ti-clock" aria-hidden="true"></i> Snooze
+                  </div>
+                  <div class="email-snooze-options">
+                    <button class="email-snooze-btn" onclick="EmailModule.snooze('later')"><i class="ti ti-clock" aria-hidden="true"></i> Later Today <span class="fg3">18:00</span></button>
+                    <button class="email-snooze-btn" onclick="EmailModule.snooze('tomorrow')"><i class="ti ti-calendar" aria-hidden="true"></i> Tomorrow <span class="fg3">09:00</span></button>
+                    <button class="email-snooze-btn" onclick="EmailModule.snooze('weekend')"><i class="ti ti-calendar-week" aria-hidden="true"></i> This Weekend <span class="fg3">Sat 09:00</span></button>
+                    <button class="email-snooze-btn" onclick="EmailModule.snooze('nextweek')"><i class="ti ti-calendar-event" aria-hidden="true"></i> Next Week <span class="fg3">Mon 09:00</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Settings panel -->
+          <div class="form-panel hidden" id="email-settings-panel">
+            <div class="form-title">email settings</div>
+            <div class="form-row">
+              <label class="fg2" style="font-size:11px;flex:1">Poll interval (minutes)</label>
+              <input class="t-input" id="es-poll" type="number" style="flex:0 0 100px" value="15" />
+            </div>
+            <div class="form-row">
+              <label class="fg2" style="font-size:11px;flex:1">Auto-log finance emails</label>
+              <input type="checkbox" id="es-autofinance" checked style="width:16px;height:16px;accent-color:var(--green)" />
+            </div>
+            <div class="form-actions">
+              <button class="t-btn" onclick="EmailModule.saveSettings()">save</button>
+              <button class="t-btn-ghost" onclick="EmailModule.toggleSettings()">close</button>
             </div>
           </div>
 
@@ -1075,6 +2187,7 @@
     }
   </script>
   <script src="data/store.js"></script>
+  <script src="data/config.js"></script>
   <script src="modules/dashboard.js"></script>
   <script src="modules/work.js"></script>
   <script src="modules/blem.js"></script>
@@ -1082,7 +2195,16 @@
   <script src="modules/blueport.js"></script>
   <script src="modules/finance.js"></script>
   <script src="modules/study.js"></script>
+  <script src="modules/pomodoro.js"></script>
   <script src="modules/gym.js"></script>
+  <script src="modules/habits.js"></script>
+  <script src="modules/goals.js"></script>
+  <script src="modules/journal.js"></script>
+  <script src="modules/calendar.js"></script>
+  <script src="modules/email.js"></script>
+  <script src="modules/ai.js"></script>
+  <script src="components/ui.js"></script>
+  <script src="components/charts.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

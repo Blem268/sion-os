@@ -26,7 +26,10 @@ function navigate(moduleId, btn) {
     dashboard: 'Sion OS — Dashboard', work: 'Sion OS — Work',
     blem: 'Sion OS — Blem Tuned',    younity: 'Sion OS — Younity',
     blueport: 'Sion OS — Blueport',  finance: 'Sion OS — Finance',
-    study: 'Sion OS — Study',        gym: 'Sion OS — Gym'
+    study: 'Sion OS — Study',        gym: 'Sion OS — Gym',
+    habits: 'Sion OS — Habits',      goals: 'Sion OS — Goals',
+    journal: 'Sion OS — Journal',    calendar: 'Sion OS — Calendar',
+    email: 'Sion OS — Email'
   };
   document.title = titles[moduleId] || 'Sion OS';
   Store.set('last_module', moduleId);
@@ -44,20 +47,46 @@ function navigate(moduleId, btn) {
 const App = (() => {
 
   function applyTheme(theme) {
-    const root = document.documentElement;
-    const icon = document.getElementById('theme-icon');
-    if (theme === 'light') {
+    const root   = document.documentElement;
+    const icon   = document.getElementById('theme-icon');
+    const batBtn = document.getElementById('batman-btn');
+
+    root.classList.remove('light', 'batman');
+
+    if (theme === 'batman') {
+      root.classList.add('batman');
+      if (icon)   { icon.classList.remove('ti-moon'); icon.classList.add('ti-sun'); }
+      if (batBtn) batBtn.classList.add('batman-active');
+    } else if (theme === 'light') {
       root.classList.add('light');
-      if (icon) { icon.classList.remove('ti-sun'); icon.classList.add('ti-moon'); }
+      if (icon)   { icon.classList.remove('ti-sun'); icon.classList.add('ti-moon'); }
+      if (batBtn) batBtn.classList.remove('batman-active');
     } else {
-      root.classList.remove('light');
-      if (icon) { icon.classList.remove('ti-moon'); icon.classList.add('ti-sun'); }
+      if (icon)   { icon.classList.remove('ti-moon'); icon.classList.add('ti-sun'); }
+      if (batBtn) batBtn.classList.remove('batman-active');
     }
   }
 
   function toggleTheme() {
+    if (document.documentElement.classList.contains('batman')) return;
     const current = document.documentElement.classList.contains('light') ? 'light' : 'dark';
     const next    = current === 'dark' ? 'light' : 'dark';
+    try { localStorage.setItem('sionos_theme', next); } catch(e) {}
+    applyTheme(next);
+  }
+
+  function toggleBatman() {
+    const isBatman = document.documentElement.classList.contains('batman');
+    let next;
+    if (isBatman) {
+      try { next = localStorage.getItem('sionos_prev_theme') || 'dark'; } catch(e) { next = 'dark'; }
+    } else {
+      try {
+        const cur = document.documentElement.classList.contains('light') ? 'light' : 'dark';
+        localStorage.setItem('sionos_prev_theme', cur);
+      } catch(e) {}
+      next = 'batman';
+    }
     try { localStorage.setItem('sionos_theme', next); } catch(e) {}
     applyTheme(next);
   }
@@ -87,7 +116,7 @@ const App = (() => {
     applyTheme(saved);
   }
 
-  return { toggleTheme, exportData, init };
+  return { toggleTheme, toggleBatman, exportData, init };
 
 })();
 
@@ -107,6 +136,11 @@ window.addEventListener('store-ready', (e) => {
 document.addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
     e.preventDefault();
+    // If on email module, focus the email search instead
+    if (document.getElementById('mod-email')?.classList.contains('active')) {
+      const emailSearch = document.getElementById('email-search');
+      if (emailSearch) { emailSearch.focus(); return; }
+    }
     const dashBtn = document.querySelector('[data-module="dashboard"]');
     navigate('dashboard', dashBtn);
     setTimeout(() => {
@@ -122,7 +156,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
-console.log('%c SION OS v2.2.0 ', 'background:#00ff88;color:#080808;font-weight:bold;font-family:monospace;padding:2px 8px;');
+console.log('%c SION OS v2.9.2 ', 'background:#00ff88;color:#080808;font-weight:bold;font-family:monospace;padding:2px 8px;');
 const _isElectron = typeof window !== 'undefined' && window.electronAPI?.isElectron;
 console.log('%c ' + (_isElectron ? 'Electron desktop app' : 'Web browser') + ' ', 'color:#666;font-family:monospace;');
 
