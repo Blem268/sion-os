@@ -192,6 +192,13 @@ const Blem = (() => {
   /* ── Job form ── */
   function showJobForm() {
     clearJobForm();
+    // CR-012: Populate account dropdown from bank_accounts
+    const acctSel = document.getElementById('bj-account');
+    if (acctSel) {
+      const accounts = Store.getAll('bank_accounts');
+      acctSel.innerHTML = '<option value="">payment account (optional)</option>' +
+        accounts.map(a=>`<option value="${a.id}">${a.name}</option>`).join('');
+    }
     document.getElementById('blem-job-form')?.classList.remove('hidden');
     document.getElementById('bj-vehicle')?.focus();
   }
@@ -230,7 +237,7 @@ const Blem = (() => {
   }
 
   function clearJobForm() {
-    ['bj-vehicle','bj-quote','bj-parts','bj-paid','bj-client-name','bj-client-phone','bj-notes','bj-date-in']
+    ['bj-vehicle','bj-quote','bj-parts','bj-paid','bj-client-name','bj-client-phone','bj-notes','bj-date-in','bj-account']
       .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
     const ps = document.getElementById('bj-payment-status');
     const st = document.getElementById('bj-status');
@@ -275,10 +282,56 @@ const Blem = (() => {
       source:          'direct',
     };
 
+    const accountId = document.getElementById('bj-account')?.value || null;
+    jobData.account_id = accountId;
+
+    let jobRecord;
     if (editId) {
       Store.update('blem_jobs', editId, jobData);
+      jobRecord = { id: editId, ...jobData };
     } else {
-      Store.insert('blem_jobs', { job_ref: nextRef(), ...jobData });
+      jobRecord = Store.insert('blem_jobs', { job_ref: nextRef(), ...jobData });
+    }
+
+    // CR-012: Auto-create income entry in Finance if payment received
+    if (paid > 0 && !editId) {
+      const income = Store.insert('income', {
+        source:        'Blem Tuned',
+        category:      'Business Revenue',
+        amount_xcd:    paid,
+        received_date: new Date().toISOString().split('T')[0],
+        account_id:    accountId,
+        notes:         jobRecord.job_ref + ' — ' + (vehicle || ''),
+        source_ref:    jobRecord.job_ref,
+      });
+
+      // CR-012: Update bank account balance
+      if (accountId) {
+        const accounts = Store.getAll('bank_accounts');
+        const acct     = accounts.find(a => a.id === parseInt(accountId));
+        if (acct) {
+          Store.update('bank_accounts', acct.id, {
+            balance: (parseFloat(acct.balance) || 0) + paid
+          });
+        }
+      }
+
+      if (window.electronAPI?.notify) {
+        window.electronAPI.notify(
+          'Blem income logged',
+          jobRecord.job_ref + ' — $' + paid.toLocaleString() + ' XCD added to Finance',
+          false
+        );
+      }
+
+      if (window.electronAPI?.writeVaultNote) {
+        const date = new Date().toISOString().split('T')[0];
+        window.electronAPI.writeVaultNote(
+          `businesses/blem-tuned/jobs/${jobRecord.job_ref}-${date}.md`,
+          { date, type: 'job-note', status: 'active', project: 'blem-tuned', tags: '["blem-tuned", "revenue", "job"]' },
+          `# ${jobRecord.job_ref} — ${vehicle}\n\n## Job details\n- **Type:** ${jobData.job_type}\n- **Quote:** XCD $${quote}\n- **Paid:** XCD $${paid}\n- **Client:** ${clientName || 'Walk-in'}\n\n## Notes\n${jobData.notes || 'None'}\n\n## Outcome\n\n`
+        );
+      }
     }
 
     hideJobForm();
@@ -290,6 +343,9 @@ const Blem = (() => {
     renderMetrics();
     renderJobs();
     renderClients();
+    if (typeof Charts !== 'undefined') {
+      Charts.renderBlemRevenueChart('chart-blem-revenue');
+    }
   }
 
   function setEl(id, val) {
@@ -304,10 +360,20 @@ const Blem = (() => {
   }
 
   /* ── Init ── */
+  function getStats() {
+    const jobs = Store.getAll('blem_jobs');
+    const now  = new Date();
+    const thisMonth = d => { if (!d) return false; const x = new Date(d); return x.getMonth() === now.getMonth() && x.getFullYear() === now.getFullYear(); };
+    return {
+      activeJobs: jobs.filter(j => j.status !== 'Complete').length,
+      revenue:    jobs.filter(j => thisMonth(j.created_at)).reduce((s, j) => s + (parseFloat(j.amount_paid_xcd) || 0), 0),
+    };
+  }
+
   function init() { renderAll(); }
 
   return {
-    init, renderAll,
+    init, renderAll, getStats,
     showJobForm, hideJobForm, saveJob, editJob,
     markPaid, deleteJob, updateRating,
   };

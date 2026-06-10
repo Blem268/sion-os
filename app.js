@@ -29,7 +29,8 @@ function navigate(moduleId, btn) {
     study: 'Sion OS — Study',        gym: 'Sion OS — Gym',
     habits: 'Sion OS — Habits',      goals: 'Sion OS — Goals',
     journal: 'Sion OS — Journal',    calendar: 'Sion OS — Calendar',
-    email: 'Sion OS — Email'
+    email: 'Sion OS — Email',        ai: 'Sion OS — AI Companion',
+    pomodoro: 'Sion OS — Pomodoro'
   };
   document.title = titles[moduleId] || 'Sion OS';
   Store.set('last_module', moduleId);
@@ -156,7 +157,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
-console.log('%c SION OS v2.9.2 ', 'background:#00ff88;color:#080808;font-weight:bold;font-family:monospace;padding:2px 8px;');
+console.log('%c SION OS v3.0.1 ', 'background:#00ff88;color:#080808;font-weight:bold;font-family:monospace;padding:2px 8px;');
 const _isElectron = typeof window !== 'undefined' && window.electronAPI?.isElectron;
 console.log('%c ' + (_isElectron ? 'Electron desktop app' : 'Web browser') + ' ', 'color:#666;font-family:monospace;');
 

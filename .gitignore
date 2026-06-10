@@ -1,3 +1,16 @@
 node_modules/
-.DS_Store
 .claude/
+
+# API credentials and OAuth tokens — never commit these
+.env
+credentials.json
+gmail-token.json
+gcal-token.json
+*.token.json
+
+# Logs and backups
+logs/
+backups/
+
+# macOS
+.DS_Store

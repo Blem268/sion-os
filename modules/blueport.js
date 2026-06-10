@@ -22,7 +22,6 @@ const Blueport = (() => {
     { title:'Register Blueport Agency as a business entity',    category:'Legal',       due:'2026-06-30' },
     { title:'Open business bank account',                       category:'Legal',       due:'2026-07-15' },
     { title:'Draft standard shipping service agreement',        category:'Legal',       due:'2026-07-31' },
-    { title:'Confirm D-Max delivery date with dealer',          category:'Operations',  due:'2026-06-15' },
     { title:'Plan primary delivery routes in Antigua',          category:'Operations',  due:'2026-07-01' },
     { title:'Source and price cargo insurance',                 category:'Operations',  due:'2026-07-15' },
     { title:'Build Blueport website (basic landing page)',      category:'Marketing',   due:'2026-07-31' },
@@ -226,9 +225,17 @@ const Blueport = (() => {
 
   function renderAll() { renderMetrics(); renderChecklist(); }
 
+  function getStats() {
+    const tasks = Store.getAll('blueport_tasks');
+    const done  = tasks.filter(t => t.done).length;
+    const pct   = tasks.length ? Math.round(done / tasks.length * 100) : 0;
+    const daysToLaunch = Math.ceil((new Date('2026-09-01') - new Date()) / 86400000);
+    return { total: tasks.length, done, pct, daysToLaunch };
+  }
+
   function init() { seedTasks(); renderAll(); }
 
-  return { init, renderAll, toggleTask, deleteTask, showTaskForm, hideTaskForm, saveTask };
+  return { init, renderAll, getStats, toggleTask, deleteTask, showTaskForm, hideTaskForm, saveTask };
 
 })();
 

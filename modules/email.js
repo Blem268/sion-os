@@ -1,6 +1,6 @@
 /* ============================================
    SION OS — modules/email.js
-   v2.9.2 — Sprint 18C
+   v2.9.3 — Sprint 18D
    Gmail client — Phase A (read + AI)
    ============================================ */
 
@@ -100,80 +100,59 @@ const EmailModule = (() => {
   }
 
   /* ── HTML / plain text body renderer ── */
-  function renderEmailBody(body) {
+  function renderEmailBody(body, isHtml) {
     const bodyEl = document.getElementById('email-detail-body');
     if (!bodyEl) return;
+    bodyEl.innerHTML = '';
 
-    const looksLikeHtml = /<(div|p|table|html|body|span|a|br|img|td|tr)[\s>]/i.test(body || '');
+    if (!body) {
+      bodyEl.innerHTML = '<div style="color:var(--fg3);font-size:12px;padding:20px 0">No content in this email.</div>';
+      return;
+    }
+
+    const looksLikeHtml = /<(div|p|table|html|body|span|a|br|img|td|tr|h[1-6])[\s>]/i.test(body);
 
     if (looksLikeHtml) {
-      const iframe = document.createElement('iframe');
-      iframe.style.cssText = 'width:100%;border:none;min-height:200px;max-height:500px;background:#111111;flex:1;display:block';
-      iframe.setAttribute('sandbox', 'allow-same-origin');
-      iframe.setAttribute('title', 'Email content');
-      bodyEl.innerHTML = '';
-      bodyEl.appendChild(iframe);
-      const doc = iframe.contentDocument || iframe.contentWindow.document;
-      doc.open();
-      doc.write(`
-  <html>
-    <head>
-      <style>
-        * { box-sizing: border-box; }
-        html, body {
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-          font-size: 13px;
-          color: #e8e8e8;
-          background: #111111;
-          padding: 12px;
-          margin: 0;
-          line-height: 1.6;
-          word-break: break-word;
-        }
-        a { color: #00d4ff; }
-        img { max-width: 100%; height: auto; border-radius: 4px; }
-        table { max-width: 100% !important; width: 100% !important; }
-        td, th { padding: 4px 8px; }
-        pre, code { white-space: pre-wrap; font-family: monospace; }
-        div[style*="background"], td[style*="background"],
-        table[style*="background"] {
-          background-color: #111111 !important;
-        }
-        [style*="color:#ffffff"], [style*="color: #ffffff"],
-        [style*="color:white"], [style*="color: white"] {
-          color: #e8e8e8 !important;
-        }
-      </style>
-    </head>
-    <body>${body}</body>
-  </html>
-`);
-      doc.close();
-      iframe.onload = () => {
-        try {
-          const h = iframe.contentDocument.body.scrollHeight;
-          iframe.style.height = Math.min(h + 20, 500) + 'px';
-        } catch(e) {}
-      };
+      let safe = body
+        .replace(/<script[\s\S]*?<\/script>/gi, '')
+        .replace(/<style[\s\S]*?<\/style>/gi, '')
+        .replace(/on\w+="[^"]*"/gi, '')
+        .replace(/on\w+='[^']*'/gi, '')
+        .replace(/javascript:/gi, '')
+        .replace(/color\s*:\s*#(?:fff|ffffff|FFF|FFFFFF)/g, 'color:#e8e8e8')
+        .replace(/background(?:-color)?\s*:\s*#(?:fff|ffffff|FFF|FFFFFF)/g, 'background:#111111')
+        .replace(/background(?:-color)?\s*:\s*white/gi, 'background:#111111')
+        .replace(/color\s*:\s*white/gi, 'color:#e8e8e8');
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'email-html-body';
+      wrapper.innerHTML = safe;
+      bodyEl.appendChild(wrapper);
     } else {
-      bodyEl.innerHTML = '';
       const pre = document.createElement('pre');
-      pre.style.cssText = 'white-space:pre-wrap;word-break:break-word;font-family:inherit;font-size:12px;color:var(--fg2);line-height:1.7;margin:0';
-      pre.textContent = body || '';
+      pre.className = 'email-plain-body';
+      pre.textContent = body;
       bodyEl.appendChild(pre);
     }
 
-    if (body && body.length >= 3900) {
-      const truncEl = document.createElement('div');
-      truncEl.className = 'email-truncated-notice';
-      truncEl.innerHTML = '<i class="ti ti-info-circle" aria-hidden="true"></i> Email truncated for display. Open in Gmail to see full message.';
-      bodyEl.appendChild(truncEl);
+    if (body.length >= 3900) {
+      const notice = document.createElement('div');
+      notice.className = 'email-truncated-notice';
+      notice.innerHTML = '<i class="ti ti-info-circle" aria-hidden="true"></i> Email truncated. <a href="#" onclick="return false" style="color:var(--cyan)">Open in Gmail</a> to see full message.';
+      bodyEl.appendChild(notice);
     }
   }
 
   /* ── Init ── */
   async function init() {
     _settings = Store.get('email_settings') || { poll_mins: 15, auto_finance: true };
+    const greetingEl = document.getElementById('email-greeting');
+    if (greetingEl) {
+      const h = new Date().getHours();
+      const timeGreeting = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+      const name = Store.get('user_prefs')?.name || '';
+      greetingEl.textContent = `${timeGreeting}${name ? ', ' + name : ''}.`;
+    }
     await checkAuthStatus();
     renderLabels();
     startPolling();
@@ -317,7 +296,7 @@ const EmailModule = (() => {
       const hit      = cached.find(c => c.gmail_id === e.id);
       const osLabel  = hit?.os_label;
       const labelCol = osLabel ? LABEL_COLOURS[osLabel] : null;
-      const isActive = e.id === _activeId;
+      const isActive = e.id === _activeId && _activeEmail !== null;
 
       return `
         <div class="email-row ${e.isRead ? '' : 'email-unread'} ${isActive ? 'email-row-active' : ''}" onclick="EmailModule.openEmail('${escapeHtml(e.id)}')">
@@ -329,7 +308,7 @@ const EmailModule = (() => {
             <div class="email-row-top">
               <span class="email-row-from ${e.isRead ? '' : 'email-row-from-bold'}">${escapeHtml(name)}</span>
               ${osLabel ? `<span class="email-row-label" style="background:${labelCol}20;color:${labelCol};border:0.5px solid ${labelCol}40">${escapeHtml(osLabel)}</span>` : ''}
-              ${hit?.finance_amount ? `<span class="email-row-amount green">$${hit.finance_amount}</span>` : ''}
+              ${hit?.finance_amount ? `<span class="email-row-amount green">$${escapeHtml(String(hit.finance_amount || ''))}</span>` : ''}
               <span class="email-row-date">${escapeHtml(date)}</span>
             </div>
             <div class="email-row-subject ${e.isRead ? '' : 'email-row-subject-bold'}">${escapeHtml(e.subject)}</div>
@@ -342,38 +321,40 @@ const EmailModule = (() => {
   /* ── Open email ── */
   async function openEmail(id) {
     _activeId = id;
-    renderEmailList();
 
+    // Immediately show content area, hide empty state
     const emptyEl   = document.getElementById('email-detail-empty');
     const contentEl = document.getElementById('email-detail-content');
-    const aiAuthEl  = document.getElementById('email-ai-auth');
-    const aiAnalEl  = document.getElementById('email-ai-analysis');
     if (emptyEl)   emptyEl.classList.add('hidden');
     if (contentEl) contentEl.classList.remove('hidden');
-    if (aiAuthEl)  aiAuthEl.classList.add('hidden');
-    if (aiAnalEl)  aiAnalEl.classList.remove('hidden');
 
-    // Auto-open AI panel
+    // Show loading state in subject
+    setEl('email-detail-subject', 'Loading...');
+    setEl('email-detail-body', '');
+
+    // Update list to show selected state immediately
+    renderEmailList();
+
+    // Open AI panel
     _aiPanelOpen = true;
     document.getElementById('email-ai-panel')?.classList.add('open');
-    const aiToggleBtn = document.getElementById('email-ai-toggle');
-    if (aiToggleBtn) aiToggleBtn.style.color = 'var(--green)';
+    document.getElementById('email-ai-toggle')?.classList.add('active');
 
-    // Loading state on subject
-    const subjectEl = document.getElementById('email-detail-subject');
-    if (subjectEl) subjectEl.innerHTML = '<span style="color:var(--fg3)">Loading...</span>';
-
-    // Thinking dots while Claude analyses
+    // Show thinking dots in AI summary
     const summaryEl = document.getElementById('email-ai-summary');
     if (summaryEl) {
       summaryEl.innerHTML = `<div style="display:flex;align-items:center;gap:4px;padding:4px 0"><span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span></div>`;
     }
 
-    const actEl = document.getElementById('email-actions-list');
-    if (actEl) actEl.innerHTML = '';
-    const finEl = document.getElementById('email-finance-alert');
-    if (finEl) finEl.style.display = 'none';
+    // Show AI analysis section, hide auth section
+    document.getElementById('email-ai-auth')?.classList.add('hidden');
+    document.getElementById('email-ai-analysis')?.classList.remove('hidden');
+
+    const actEl      = document.getElementById('email-actions-list');
+    const finEl      = document.getElementById('email-finance-alert');
     const finCreated = document.getElementById('email-finance-created');
+    if (actEl)      actEl.innerHTML          = '';
+    if (finEl)      finEl.style.display      = 'none';
     if (finCreated) finCreated.style.display = 'none';
 
     // Restore persisted finance badge from cache
@@ -405,7 +386,7 @@ const EmailModule = (() => {
     setEl('email-detail-date', formatEmailDate(email.date));
     setEl('email-detail-avatar', initials);
 
-    renderEmailBody(email.body || '');
+    renderEmailBody(email.body || '', email.isHtml);
 
     // Label badge
     const labelBadge = document.getElementById('email-detail-label-badge');
@@ -445,7 +426,27 @@ const EmailModule = (() => {
         const finDetail = document.getElementById('email-finance-detail');
         if (finDetail) finDetail.textContent = `${analysis.financeData.type}: $${analysis.financeData.amount} XCD — ${analysis.financeData.description}`;
 
-        if (result.financeCreated) {
+        const alreadyLogged = Store.getAll('email_cache').find(c => c.gmail_id === id && c.finance_logged === true);
+        if (!alreadyLogged && result.financeCreated) {
+          const fd    = analysis.financeData;
+          const today = new Date().toISOString().split('T')[0];
+          if (result.financeCreated === 'income') {
+            Store.insert('income', {
+              source:        'Bank Notification',
+              category:      'Other',
+              amount_xcd:    parseFloat(fd.amount) || 0,
+              received_date: today,
+              notes:         email.subject + ' (auto from email)',
+            });
+          } else if (result.financeCreated === 'expense') {
+            Store.insert('expenses', {
+              item:         email.subject,
+              category:     'Other',
+              amount_xcd:   parseFloat(fd.amount) || 0,
+              expense_date: today,
+              notes:        (fd.description || '') + ' (auto from email)',
+            });
+          }
           if (finCreated) finCreated.style.display = 'flex';
           const existing = Store.getAll('email_cache').find(c => c.gmail_id === id);
           if (existing) {
@@ -518,10 +519,14 @@ const EmailModule = (() => {
   function closeDetail() {
     _activeId    = null;
     _activeEmail = null;
+    _aiPanelOpen = false;
     document.getElementById('email-detail-empty')?.classList.remove('hidden');
     document.getElementById('email-detail-content')?.classList.add('hidden');
+    document.getElementById('email-ai-panel')?.classList.remove('open');
+    document.getElementById('email-ai-toggle')?.classList.remove('active');
     document.getElementById('email-ai-auth')?.classList.remove('hidden');
     document.getElementById('email-ai-analysis')?.classList.add('hidden');
+    renderEmailList();
   }
 
   /* ── AI panel slide-out toggle ── */
@@ -529,11 +534,8 @@ const EmailModule = (() => {
     _aiPanelOpen = !_aiPanelOpen;
     const panel = document.getElementById('email-ai-panel');
     const btn   = document.getElementById('email-ai-toggle');
-    if (panel) {
-      if (_aiPanelOpen) panel.classList.add('open');
-      else              panel.classList.remove('open');
-    }
-    if (btn) btn.style.color = _aiPanelOpen ? 'var(--green)' : '';
+    if (panel) panel.classList.toggle('open', _aiPanelOpen);
+    if (btn)   btn.classList.toggle('active', _aiPanelOpen);
   }
 
   /* ── Folder unread counts ── */

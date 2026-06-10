@@ -1,23 +1,15 @@
 /* ============================================
    SION OS — younity.js
-   v0.5.0 — Sprint 4
-   US-008: $2K/month revenue target
-   US-009: 6-stage CRM pipeline
+   v2.4.0 — CR-003
+   Younity = Project + Task manager
+   CRM lives in Younity's standalone tool.
+   OS manages the work.
    ============================================ */
 
 const Younity = (() => {
 
-  const TARGET    = 2000;
-  const STAGES    = ['Lead','Proposal Sent','Onboarding','Active','Delivered','Retained','Lost'];
-  const STAGE_CLS = {
-    'Lead':           'stage-lead',
-    'Proposal Sent':  'stage-proposal',
-    'Onboarding':     'stage-onboard',
-    'Active':         'stage-active',
-    'Delivered':      'stage-delivered',
-    'Retained':       'stage-retained',
-    'Lost':           'stage-lost',
-  };
+  const STATUSES  = ['Planning','Active','On Hold','Complete'];
+  const TASK_STATUSES = ['To Do','In Progress','Done','Blocked'];
 
   function escapeHtml(str) {
     return String(str)
@@ -25,192 +17,263 @@ const Younity = (() => {
       .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  function isOverdue(dateStr) {
-    if (!dateStr) return false;
-    return new Date(dateStr + 'T00:00:00') < new Date();
+  function formatDate(dateStr) {
+    if (!dateStr) return '—';
+    return new Date(dateStr + 'T00:00:00')
+      .toLocaleDateString('en-AG', { day:'numeric', month:'short', year:'numeric' });
   }
 
-  function formatDate(dateStr) {
-    if (!dateStr) return '';
-    return new Date(dateStr + 'T00:00:00')
-      .toLocaleDateString('en-AG', { day:'numeric', month:'short' });
+  function isOverdue(dateStr, done) {
+    if (!dateStr || done) return false;
+    return new Date(dateStr + 'T00:00:00') < new Date();
   }
 
   /* ── Metrics ── */
   function renderMetrics() {
-    const clients  = Store.getAll('younity_clients');
-    const active   = clients.filter(c => c.stage === 'Active' || c.stage === 'Retained');
-    const pipeline = clients.reduce((s,c) => s + (parseFloat(c.contract_value_xcd) || 0), 0);
-    const revenue  = active.reduce((s,c) => s + (parseFloat(c.contract_value_xcd) || 0), 0);
-    const gap      = Math.max(0, TARGET - revenue);
-    const leads    = clients.filter(c => c.stage === 'Lead').length;
+    const projects = Store.getAll('younity_projects');
+    const tasks    = Store.getAll('younity_tasks');
 
-    setEl('y-active',   active.length);
-    setEl('y-pipeline', '$' + pipeline.toLocaleString());
-    setEl('y-client-count', clients.length + ' total · ' + leads + ' leads');
+    const active    = projects.filter(p => p.status === 'Active').length;
+    const complete  = projects.filter(p => p.status === 'Complete').length;
+    const openTasks = tasks.filter(t => t.status !== 'Done').length;
+    const overdue   = tasks.filter(t => isOverdue(t.due_date, t.status === 'Done')).length;
 
-    const gapEl  = document.getElementById('y-gap');
-    const subEl  = document.getElementById('y-gap-sub');
-    if (gapEl) {
-      gapEl.textContent = gap > 0 ? '$' + gap.toLocaleString() : '$0';
-      gapEl.className   = 'mc-val ' + (gap === 0 ? 'green' : gap < TARGET/2 ? 'amber' : 'amber');
-    }
-    if (subEl) {
-      subEl.textContent = gap === 0
-        ? 'target hit!'
-        : revenue > 0
-          ? '$' + revenue.toLocaleString() + ' active of $2,000 target'
-          : 'no active revenue yet';
-    }
+    setEl('y-active-projects', active);
+    setEl('y-complete-projects', complete);
+    setEl('y-open-tasks', openTasks);
+    setEl('y-overdue-tasks', overdue);
   }
 
-  /* ── Pipeline board ── */
-  function renderPipeline() {
-    const el = document.getElementById('y-pipeline-board');
+  /* ── Render project board ── */
+  function renderProjects() {
+    const el = document.getElementById('y-project-board');
     if (!el) return;
-    const clients = Store.getAll('younity_clients');
-    const visibleStages = STAGES.filter(s => s !== 'Lost');
 
-    el.innerHTML = visibleStages.map(stage => {
-      const stageClients = clients.filter(c => c.stage === stage);
+    const projects = Store.getAll('younity_projects');
+    const tasks    = Store.getAll('younity_tasks');
+
+    if (!projects.length) {
+      el.innerHTML = '<div class="task-empty">no projects yet — add one above</div>';
+      return;
+    }
+
+    el.innerHTML = projects.map(p => {
+      const pTasks    = tasks.filter(t => t.project_id === p.id);
+      const done      = pTasks.filter(t => t.status === 'Done').length;
+      const total     = pTasks.length;
+      const pct       = total > 0 ? Math.round(done / total * 100) : 0;
+      const overdue   = pTasks.filter(t => isOverdue(t.due_date, t.status === 'Done')).length;
+
+      const statusCls = {
+        'Planning':  'pill-gray',
+        'Active':    'pill-green',
+        'On Hold':   'pill-amber',
+        'Complete':  'pill-cyan',
+      }[p.status] || 'pill-gray';
+
       return `
-        <div class="y-stage">
-          <div class="y-stage-header">
-            <span class="y-stage-name ${STAGE_CLS[stage]}">${stage}</span>
-            <span class="y-stage-count">${stageClients.length}</span>
+        <div class="y-project-card ${p.status === 'Complete' ? 'y-project-complete' : ''}">
+          <div class="y-project-header">
+            <div class="y-project-name">${escapeHtml(p.name)}</div>
+            <div class="y-project-actions">
+              ${overdue ? `<span class="pill pill-red" style="font-size:8px">${overdue} overdue</span>` : ''}
+              <span class="pill ${statusCls}">${p.status}</span>
+              <button class="task-del" onclick="Younity.showTaskForm(${p.id})" title="Add task" aria-label="Add task">
+                <i class="ti ti-plus" aria-hidden="true"></i>
+              </button>
+              <button class="task-del" onclick="Younity.deleteProject(${p.id})" aria-label="Delete project">
+                <i class="ti ti-x" aria-hidden="true"></i>
+              </button>
+            </div>
           </div>
-          <div class="y-stage-cards">
-            ${stageClients.length === 0
-              ? `<div class="y-empty-stage">—</div>`
-              : stageClients.map(c => {
-                  const overdue = isOverdue(c.next_action_date);
-                  return `
-                    <div class="y-client-card ${overdue ? 'y-card-overdue' : ''}">
-                      <div class="y-card-name">${escapeHtml(c.name)}</div>
-                      <div class="y-card-biz">${escapeHtml(c.business || '')}</div>
-                      ${c.contract_value_xcd
-                        ? `<div class="y-card-value amber">$${parseFloat(c.contract_value_xcd).toLocaleString()} XCD</div>`
-                        : ''}
-                      ${c.next_action
-                        ? `<div class="y-card-action ${overdue ? 'red' : 'fg3'}">
-                             <i class="ti ti-arrow-right" aria-hidden="true"></i>
-                             ${escapeHtml(c.next_action)}
-                             ${c.next_action_date ? `<span class="y-card-date">${formatDate(c.next_action_date)}</span>` : ''}
-                           </div>`
-                        : ''}
-                      <div class="y-card-actions">
-                        <select class="y-stage-select" onchange="Younity.changeStage(${c.id}, this.value)">
-                          ${STAGES.map(s => `<option value="${s}" ${c.stage===s?'selected':''}>${s}</option>`).join('')}
-                        </select>
-                        <button class="task-del" onclick="Younity.deleteClient(${c.id})" aria-label="Delete">
-                          <i class="ti ti-x" aria-hidden="true"></i>
-                        </button>
-                      </div>
-                    </div>`;
-                }).join('')
-            }
+          ${p.client ? `<div class="y-project-client"><i class="ti ti-user" aria-hidden="true"></i> ${escapeHtml(p.client)}</div>` : ''}
+          ${p.description ? `<div class="y-project-desc">${escapeHtml(p.description)}</div>` : ''}
+          <div class="y-project-meta">
+            ${p.due_date ? `<span class="${isOverdue(p.due_date, p.status==='Complete') ? 'red' : 'fg3'}" style="font-size:9px">due ${formatDate(p.due_date)}</span>` : ''}
+            ${total > 0 ? `<span class="fg3" style="font-size:9px">${done}/${total} tasks</span>` : ''}
+          </div>
+          ${total > 0 ? `
+            <div class="y-task-progress">
+              <div class="prog-track" style="height:2px;">
+                <div class="prog-fill ${pct === 100 ? 'green-fill' : 'cyan-fill'}" style="width:${pct}%"></div>
+              </div>
+              <span class="fg3" style="font-size:9px">${pct}%</span>
+            </div>` : ''}
+          <div class="y-task-list" id="y-tasks-${p.id}">
+            ${renderProjectTasks(pTasks, p.id)}
+          </div>
+          <div class="y-project-status-row">
+            <select class="y-stage-select" onchange="Younity.changeStatus(${p.id}, this.value)">
+              ${STATUSES.map(s => `<option value="${s}" ${p.status===s?'selected':''}>${s}</option>`).join('')}
+            </select>
           </div>
         </div>`;
     }).join('');
   }
 
-  /* ── Client table ── */
-  function renderTable() {
-    const tbody = document.getElementById('y-client-tbody');
-    if (!tbody) return;
-    const clients = Store.getAll('younity_clients');
-    if (!clients.length) {
-      tbody.innerHTML = '<tr><td colspan="8" class="blem-empty">no clients yet</td></tr>';
-      return;
-    }
-    tbody.innerHTML = clients.map(c => {
-      const overdue  = isOverdue(c.next_action_date);
-      const stageCls = STAGE_CLS[c.stage] || '';
-      return `<tr>
-        <td class="white">${escapeHtml(c.name)}</td>
-        <td class="fg2">${escapeHtml(c.business || '—')}</td>
-        <td><span class="y-stage-pill ${stageCls}">${c.stage}</span></td>
-        <td class="fg2" style="font-size:10px">${escapeHtml(c.service || '—')}</td>
-        <td class="amber num">${c.contract_value_xcd ? '$'+parseFloat(c.contract_value_xcd).toLocaleString() : '—'}</td>
-        <td class="fg2" style="font-size:10px;max-width:140px">${escapeHtml(c.next_action || '—')}</td>
-        <td class="${overdue ? 'red' : 'fg3'}" style="font-size:10px;white-space:nowrap">
-          ${c.next_action_date ? formatDate(c.next_action_date) : '—'}
-          ${overdue ? '<i class="ti ti-alert-triangle" style="font-size:10px" aria-hidden="true"></i>' : ''}
-        </td>
-        <td>
-          <button class="task-del" onclick="Younity.deleteClient(${c.id})" aria-label="Delete">
+  function renderProjectTasks(tasks, projectId) {
+    if (!tasks.length) return '<div class="task-empty" style="font-size:10px;padding:6px 0">no tasks — click + to add</div>';
+
+    return tasks.map(t => {
+      const overdue = isOverdue(t.due_date, t.status === 'Done');
+      const statusCls = { 'Done':'checked', 'In Progress':'', 'Blocked':'', 'To Do':'' }[t.status] || '';
+      return `
+        <div class="task-row ${t.status==='Done'?'task-done':''} ${overdue?'bp-overdue':''}" style="padding:5px 8px">
+          <div class="task-check ${t.status==='Done'?'checked':''}"
+               onclick="Younity.toggleTask(${t.id})"
+               style="width:12px;height:12px;font-size:9px">
+            ${t.status==='Done'?'<i class="ti ti-check"></i>':''}
+          </div>
+          <div class="work-task-body">
+            <div class="work-task-title" style="font-size:10px">${escapeHtml(t.title)}</div>
+            <div class="work-task-meta">
+              ${t.due_date ? `<span class="work-due-badge ${overdue?'bp-overdue-badge':''}" style="font-size:8px">${overdue?'overdue · ':''}${formatDate(t.due_date)}</span>` : ''}
+              ${t.time_logged ? `<span class="fg3" style="font-size:9px">${t.time_logged}h logged</span>` : ''}
+            </div>
+          </div>
+          <select class="y-stage-select" style="font-size:9px;padding:2px 4px" onchange="Younity.changeTaskStatus(${t.id}, this.value)">
+            ${TASK_STATUSES.map(s=>`<option value="${s}" ${t.status===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+          <button class="task-del" onclick="Younity.deleteTask(${t.id})" aria-label="Delete task">
             <i class="ti ti-x" aria-hidden="true"></i>
           </button>
-        </td>
-      </tr>`;
+        </div>`;
     }).join('');
   }
 
-  /* ── Change stage ── */
-  function changeStage(id, stage) {
-    Store.update('younity_clients', id, { stage });
+  /* ── Change project status ── */
+  function changeStatus(id, status) {
+    Store.update('younity_projects', id, { status });
     renderAll();
   }
 
-  /* ── Delete client ── */
-  function deleteClient(id) {
-    Store.delete('younity_clients', id);
+  /* ── Toggle task ── */
+  function toggleTask(id) {
+    const task = Store.getAll('younity_tasks').find(t => t.id === id);
+    if (!task) return;
+    Store.update('younity_tasks', id, { status: task.status === 'Done' ? 'To Do' : 'Done' });
     renderAll();
   }
 
-  /* ── Client form ── */
-  function showClientForm() {
-    clearForm();
-    document.getElementById('y-client-form')?.classList.remove('hidden');
-    document.getElementById('yc-name')?.focus();
+  /* ── Change task status ── */
+  function changeTaskStatus(id, status) {
+    Store.update('younity_tasks', id, { status });
+    renderAll();
   }
 
-  function hideClientForm() {
-    document.getElementById('y-client-form')?.classList.add('hidden');
-    clearForm();
+  /* ── Delete ── */
+  function deleteProject(id) {
+    Store.delete('younity_projects', id);
+    // Also delete associated tasks
+    Store.getAll('younity_tasks')
+      .filter(t => t.project_id === id)
+      .forEach(t => Store.delete('younity_tasks', t.id));
+    renderAll();
   }
 
-  function clearForm() {
-    ['yc-name','yc-biz','yc-value','yc-next-action','yc-next-date','yc-country','yc-referred']
-      .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-    const st = document.getElementById('yc-stage');
-    const sv = document.getElementById('yc-service');
-    if (st) st.value = 'Lead';
-    if (sv) sv.value = 'AI Systems Audit';
+  function deleteTask(id) {
+    Store.delete('younity_tasks', id);
+    renderAll();
   }
 
-  function saveClient() {
-    const name = document.getElementById('yc-name')?.value.trim();
-    if (!name) { document.getElementById('yc-name')?.focus(); return; }
-    Store.insert('younity_clients', {
-      name,
-      business:            document.getElementById('yc-biz')?.value.trim()         || '',
-      stage:               document.getElementById('yc-stage')?.value              || 'Lead',
-      service:             document.getElementById('yc-service')?.value            || '',
-      contract_value_xcd:  parseFloat(document.getElementById('yc-value')?.value)  || 0,
-      next_action:         document.getElementById('yc-next-action')?.value.trim() || '',
-      next_action_date:    document.getElementById('yc-next-date')?.value          || null,
-      country:             document.getElementById('yc-country')?.value.trim()     || '',
-      referred_by:         document.getElementById('yc-referred')?.value.trim()    || '',
+  /* ── Project form ── */
+  function showProjectForm() {
+    clearProjectForm();
+    document.getElementById('y-project-form')?.classList.remove('hidden');
+    document.getElementById('yp-name')?.focus();
+  }
+  function hideProjectForm() {
+    document.getElementById('y-project-form')?.classList.add('hidden');
+    clearProjectForm();
+  }
+  function clearProjectForm() {
+    ['yp-name','yp-client','yp-description','yp-due'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
     });
-    hideClientForm();
+    const st = document.getElementById('yp-status');
+    if (st) st.value = 'Planning';
+  }
+  function saveProject() {
+    const name = document.getElementById('yp-name')?.value.trim();
+    if (!name) { document.getElementById('yp-name')?.focus(); return; }
+    Store.insert('younity_projects', {
+      name,
+      client:      document.getElementById('yp-client')?.value.trim()      || '',
+      description: document.getElementById('yp-description')?.value.trim() || '',
+      status:      document.getElementById('yp-status')?.value             || 'Planning',
+      due_date:    document.getElementById('yp-due')?.value                || null,
+    });
+    hideProjectForm();
+    renderAll();
+  }
+
+  /* ── Task form ── */
+  let _activeProjectId = null;
+  function showTaskForm(projectId) {
+    _activeProjectId = projectId;
+    clearTaskForm();
+    const form    = document.getElementById('y-task-form');
+    const titleEl = document.getElementById('yt-project-name');
+    if (form) form.classList.remove('hidden');
+    const project = Store.getAll('younity_projects').find(p => p.id === projectId);
+    if (titleEl && project) titleEl.textContent = project.name;
+    document.getElementById('yt-title')?.focus();
+  }
+  function hideTaskForm() {
+    document.getElementById('y-task-form')?.classList.add('hidden');
+    clearTaskForm();
+    _activeProjectId = null;
+  }
+  function clearTaskForm() {
+    ['yt-title','yt-due','yt-time'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+    const st = document.getElementById('yt-status');
+    if (st) st.value = 'To Do';
+  }
+  function saveTask() {
+    const title = document.getElementById('yt-title')?.value.trim();
+    if (!title || !_activeProjectId) { document.getElementById('yt-title')?.focus(); return; }
+    Store.insert('younity_tasks', {
+      project_id:  _activeProjectId,
+      title,
+      status:      document.getElementById('yt-status')?.value  || 'To Do',
+      due_date:    document.getElementById('yt-due')?.value     || null,
+      time_logged: parseFloat(document.getElementById('yt-time')?.value) || 0,
+    });
+    hideTaskForm();
     renderAll();
   }
 
   function setEl(id, val) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = val;
+    const el = document.getElementById(id); if (el) el.textContent = val;
   }
 
   function renderAll() {
     renderMetrics();
-    renderPipeline();
-    renderTable();
+    renderProjects();
+  }
+
+  function getStats() {
+    const tasks = Store.getAll('younity_tasks');
+    const now   = new Date();
+    const thisMonth = d => { if (!d) return false; const x = new Date(d); return x.getMonth() === now.getMonth() && x.getFullYear() === now.getFullYear(); };
+    const revenue = Store.getAll('income').filter(i => thisMonth(i.received_date) && i.source === 'Younity Consultancy').reduce((s, i) => s + (parseFloat(i.amount_xcd) || 0), 0);
+    return {
+      openTasks: tasks.filter(t => t.status !== 'Done').length,
+      revenue,
+    };
   }
 
   function init() { renderAll(); }
 
-  return { init, renderAll, changeStage, deleteClient, showClientForm, hideClientForm, saveClient };
+  return {
+    init, renderAll, getStats,
+    changeStatus, toggleTask, changeTaskStatus,
+    deleteProject, deleteTask,
+    showProjectForm, hideProjectForm, saveProject,
+    showTaskForm, hideTaskForm, saveTask,
+  };
 
 })();
 

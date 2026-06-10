@@ -129,7 +129,7 @@
             <span class="store-dot" id="store-dot"></span>
             <span id="store-label">connecting...</span>
           </div>
-          <span>v2.9.2</span><br/>
+          <span>v3.0.1</span><br/>
           <span>antigua 🇦🇬</span>
         </div>
       </nav>
@@ -144,7 +144,7 @@
           <div class="dash-header">
             <div>
               <div class="dash-greeting">
-                <span id="dash-greeting-text">Good morning</span>, <span class="green">Sion.</span>
+                <span id="dash-greeting-text">Good morning</span>, <span class="green" id="dash-greeting-name"></span>
               </div>
               <div class="dash-subtitle">Focus on what moves the needle today.</div>
             </div>
@@ -164,6 +164,15 @@
             <span class="dash-section-title">SYSTEM ALERTS</span>
           </div>
           <div id="dash-alerts" class="dash-alerts-grid"></div>
+
+          <!-- Alert rules panel -->
+          <div class="dash-section-row" style="margin-top:6px">
+            <span class="dash-section-title">ALERT RULES</span>
+            <button class="section-btn" onclick="Dashboard.toggleAlertRules()">manage</button>
+          </div>
+          <div class="hidden" id="alert-rules-panel" style="margin-bottom:6px">
+            <div id="alert-rules-list"></div>
+          </div>
 
           <!-- Task queue -->
           <div class="dash-section-row" style="margin-top:8px">
@@ -1369,7 +1378,7 @@
             </div>
             <div class="gym-arrow">&#8594;</div>
             <div>
-              <div class="gym-weight-big green">160</div>
+              <div class="gym-weight-big green" id="gym-weight-target-display">—</div>
               <div class="gym-weight-label">lbs target</div>
             </div>
             <div class="gym-stats">
@@ -1419,6 +1428,18 @@
             workout log
             <span class="section-label-sub" id="gym-sessions-this-week"></span>
             <button class="section-btn" onclick="Gym.showSessionForm()">+ log session</button>
+            <button class="section-btn" onclick="Gym.toggleGymSettings()" style="margin-left:4px">settings</button>
+          </div>
+          <div class="form-panel hidden" id="gym-settings-panel">
+            <div class="form-title">gym settings</div>
+            <div class="form-row">
+              <label class="fg3" style="font-size:11px;min-width:160px">Weekly workout target</label>
+              <input class="t-input" id="gym-weekly-target" type="number" min="1" max="14" placeholder="e.g. 4" style="width:80px" />
+            </div>
+            <div class="form-row" style="justify-content:flex-end;gap:8px">
+              <button class="t-btn-ghost" onclick="Gym.toggleGymSettings()">cancel</button>
+              <button class="t-btn" onclick="Gym.saveGymSettings()">save</button>
+            </div>
           </div>
           <div class="task-list" id="gym-session-list"></div>
           <div class="form-panel hidden" id="gym-session-form">
@@ -1469,7 +1490,7 @@
             <div class="gym-calorie-bar-track">
               <div class="gym-calorie-bar-fill" id="gym-cal-bar" style="width:0%"></div>
             </div>
-            <span class="gym-calorie-target">2,500 kcal target</span>
+            <span class="gym-calorie-target" id="gym-calorie-target-display">— kcal target</span>
           </div>
           <div class="task-list" id="gym-food-list"></div>
           <div class="form-panel hidden" id="gym-food-form">
@@ -2055,8 +2076,9 @@
                     <i class="ti ti-star" aria-hidden="true"></i>
                   </button>
                   <div style="flex:1"></div>
-                  <button class="cal-nav-btn" id="email-ai-toggle" onclick="EmailModule.toggleAIPanel()" title="AI Assistant" style="color:var(--green)">
-                    <i class="ti ti-sparkles" aria-hidden="true"></i> AI
+                  <button class="cal-nav-btn email-ai-btn" id="email-ai-toggle" onclick="EmailModule.toggleAIPanel()" title="AI Assistant">
+                    <i class="ti ti-sparkles" aria-hidden="true"></i>
+                    <span style="font-size:10px">AI</span>
                   </button>
                   <span class="email-detail-label" id="email-detail-label-badge"></span>
                 </div>
@@ -2188,6 +2210,8 @@
   </script>
   <script src="data/store.js"></script>
   <script src="data/config.js"></script>
+  <script src="components/ui.js"></script>
+  <script src="components/charts.js"></script>
   <script src="modules/dashboard.js"></script>
   <script src="modules/work.js"></script>
   <script src="modules/blem.js"></script>
@@ -2203,8 +2227,6 @@
   <script src="modules/calendar.js"></script>
   <script src="modules/email.js"></script>
   <script src="modules/ai.js"></script>
-  <script src="components/ui.js"></script>
-  <script src="components/charts.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

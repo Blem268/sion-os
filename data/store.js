@@ -16,10 +16,17 @@ const Store = (() => {
   const DB_NAME = 'sionos';
 
   const TABLES = [
-    'tasks', 'milestones', 'blem_clients', 'blem_jobs',
-    'younity_clients', 'blueport_tasks', 'income', 'expenses',
-    'commitments', 'study_lessons', 'gym_weight', 'gym_sessions',
-    'food_log', 'whatsapp_log'
+    'tasks', 'milestones', 'work_tasks', 'blem_clients', 'blem_jobs',
+    'younity_projects', 'younity_tasks', 'blueport_tasks',
+    'income', 'expenses', 'commitments', 'subscriptions',
+    'bank_accounts', 'account_transfers',
+    'study_lessons', 'study_sessions', 'study_plan_tasks', 'study_topics',
+    'gym_weight', 'gym_sessions',
+    'food_log', 'whatsapp_log', 'dashboard_widgets', 'user_prefs',
+    'journal_entries',
+    'calendar_events', 'focus_blocks', 'deadlines', 'calendar_settings',
+    'email_cache', 'email_labels', 'email_tasks', 'email_settings',
+    'alert_rules', 'alerts'
   ];
 
   /* ── SQLite WASM bootstrap ── */
@@ -32,14 +39,29 @@ const Store = (() => {
 
       const sqlite3 = await sqlite3InitModule({ print: ()=>{}, printErr: ()=>{} });
 
-      // Use OPFS (Origin Private File System) for persistence if available
-      if (sqlite3.oo1.OpfsDb && typeof SharedArrayBuffer !== 'undefined') {
-        _db = new sqlite3.oo1.OpfsDb('/sionos.db');
-        console.log('[Store] Using OPFS SQLite database');
+      // Use OPFS via SAHPool for persistence — works in Electron with proper headers
+      // SAHPool is the correct OPFS API that works on the main thread
+      if (sqlite3.installOpfsSAHPoolVfs) {
+        try {
+          const poolUtil = await sqlite3.installOpfsSAHPoolVfs({ clearOnClose: false });
+          _db = new poolUtil.OpfsSAHPoolDb('/sionos.db');
+          console.log('[Store] Using OPFS SAHPool SQLite — persistent file storage');
+        } catch(opfsErr) {
+          console.warn('[Store] OPFS SAHPool failed, using in-memory:', opfsErr.message);
+          _db = new sqlite3.oo1.DB(':memory:');
+        }
+      } else if (sqlite3.oo1.OpfsDb && typeof Atomics !== 'undefined') {
+        try {
+          _db = new sqlite3.oo1.OpfsDb('/sionos.db');
+          console.log('[Store] Using OPFS SQLite database');
+        } catch(opfsErr) {
+          console.warn('[Store] OPFS failed, using in-memory:', opfsErr.message);
+          _db = new sqlite3.oo1.DB(':memory:');
+        }
       } else {
-        // Fall back to in-memory + localStorage persistence
+        // In-memory with localStorage mirror — fully functional fallback
         _db = new sqlite3.oo1.DB(':memory:');
-        console.log('[Store] Using in-memory SQLite (no OPFS)');
+        console.log('[Store] Using in-memory SQLite + localStorage mirror');
       }
 
       createTables();
@@ -181,7 +203,9 @@ const Store = (() => {
 
   function insert(table, record) {
     const rows = getAll(table);
-    const id   = rows.length > 0 ? Math.max(...rows.map(r => r.id || 0)) + 1 : 1;
+    const id   = rows.length > 0
+      ? rows.reduce((max, r) => Math.max(max, r.id || 0), 0) + 1
+      : 1;
     const row  = { id, created_at: new Date().toISOString(), ...record };
     rows.push(row);
     saveAll(table, rows);

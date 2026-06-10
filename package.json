@@ -1,33 +1,38 @@
 {
   "name": "sion-os",
-  "version": "2.2.0",
+  "version": "2.9.3",
   "description": "Sion Life OS — terminal-aesthetic personal operating system",
   "author": "Sion Looby-Martinez <sion@antiguaos.ag>",
   "main": "electron/main.js",
   "scripts": {
-    "start":   "electron .",
-    "dev":     "electron . --dev",
-    "pack":    "electron-builder --mac --dir",
-    "build":   "electron-builder --mac --config.mac.identity=null"
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "pack": "electron-builder --mac --dir",
+    "build": "electron-builder --mac --config.mac.identity=null"
   },
   "build": {
-    "appId":        "ag.antigua.sionos",
-    "productName":  "Sion OS",
-    "copyright":    "© 2026 Sion Looby-Martinez",
-    "asar":         true,
+    "appId": "ag.antigua.sionos",
+    "productName": "Sion OS",
+    "copyright": "© 2026 Sion Looby-Martinez",
+    "asar": true,
     "mac": {
-      "category":          "public.app-category.productivity",
-      "icon":              "electron/assets/icon.iconset/icon_512x512@2x.png",
-      "darkModeSupport":   true,
-      "hardenedRuntime":   false,
-      "gatekeeperAssess":  false,
-      "identity":          null,
+      "category": "public.app-category.productivity",
+      "icon": "electron/assets/icon.iconset/icon_512x512@2x.png",
+      "darkModeSupport": true,
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "identity": null,
       "target": [
-        { "target": "dir", "arch": ["arm64"] }
+        {
+          "target": "dir",
+          "arch": [
+            "arm64"
+          ]
+        }
       ]
     },
     "directories": {
-      "output":    "dist",
+      "output": "dist",
       "buildResources": "electron/assets"
     },
     "files": [
@@ -37,14 +42,21 @@
       "app.js",
       "data/**/*",
       "modules/**/*",
-      "!electron/assets/icon.iconset"
+      "components/**/*",
+      "!electron/assets/icon.iconset",
+      "!.env"
     ],
     "extraResources": [],
     "npmRebuild": false
   },
   "devDependencies": {
-    "electron":         "^31.0.0",
-    "electron-builder": "^24.0.0"
+    "electron": "^31.0.0",
+    "electron-builder": "^24.0.0",
+    "electron-reload": "^2.0.0-alpha.1",
+    "playwright-core": "^1.60.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "googleapis": "^173.0.0"
+  }
 }
